@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Bankapp.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bankapp.Models
 {
@@ -10,7 +11,7 @@ namespace Bankapp.Models
         public int AccountNumber { get; set; }
 
         public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public BankappUser User { get; set; }
         public ICollection<Transaction> Transactions { get; set; }
     }
 }
