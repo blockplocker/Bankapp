@@ -1,6 +1,5 @@
 ﻿using Bankapp.Areas.Identity.Data;
 using Bankapp.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,14 +11,22 @@ public class BankappContext : IdentityDbContext<BankappUser>
         : base(options)
     {
     }
-        DbSet<Account> Accounts { get; set; } 
-        DbSet<Transaction> Transactions { get; set; }
+
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
+
+        // Specify decimal precision to avoid truncation warnings for SQL Server
+        builder.Entity<Account>()
+            .Property(a => a.Balance)
+            .HasPrecision(18, 2);
+
+        builder.Entity<Transaction>()
+            .Property(t => t.Amount)
+            .HasPrecision(18, 2);
+
     }
 }
