@@ -14,7 +14,7 @@ namespace Bankapp
             builder.Services.AddDbContext<BankappContext>(options => options.UseSqlServer(connectionString));
 
             builder.Services.AddDefaultIdentity<BankappUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BankappContext>();
-
+            
             // Add services to the container.
             builder.Services.AddRazorPages();
 
