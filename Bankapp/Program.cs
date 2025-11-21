@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Bankapp.Data;
+using Bankapp.Areas.Identity.Data;
 namespace Bankapp
 {
     public class Program
@@ -5,7 +9,12 @@ namespace Bankapp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("BankappContextConnection") ?? throw new InvalidOperationException("Connection string 'BankappContextConnection' not found.");;
 
+            builder.Services.AddDbContext<BankappContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddDefaultIdentity<BankappUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BankappContext>();
+            
             // Add services to the container.
             builder.Services.AddRazorPages();
 
