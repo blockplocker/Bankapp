@@ -1,0 +1,73 @@
+body.login-body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: url('/images/banklogin.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    width: 300px;
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    color: #fff;
+}
+
+.login-box h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.login-box label {
+    color: #fff;
+}
+
+.login-box a {
+    color: #b0e3ff;
+    text-decoration: none;
+    font-size: 0.75rem;
+}
+
+.login-box a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+.form-control {
+    height: 38px; 
+    font-size: 0.85rem; 
+    padding: 6px 10px; 
+}
+
+
+.form-floating > label {
+    font-size: 0.75rem;
+}
+
+
+.form-floating {
+    margin-bottom: 12px !important; 
+}
+
+
+.checkbox label {
+    font-size: 0.8rem;
+}
+
+
+#login-submit {
+    height: 38px;
+    font-size: 0.85rem;
+    padding: 0;
+}
+
+
