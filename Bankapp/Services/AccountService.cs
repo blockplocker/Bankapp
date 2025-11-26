@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bankapp.Services
 {
-    public class AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository)
+    public class AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository, BankappContext bankappContext)
     {
         private readonly IAccountRepository _accountRepository = accountRepository;
         private readonly ITransactionRepository _TransactionRepository = transactionRepository;
+        private readonly BankappContext _bankappContext = bankappContext;
 
         public async Task<Account> CreateAccountAsync(string userId, string accountName, decimal initialDeposit = 0m)
         {
@@ -124,7 +125,11 @@ namespace Bankapp.Services
 
         private async Task<int> GenerateAccountNumberAsync()
         {
-            return 0; // Placeholder for account number generation logic
+            var seq = await _bankappContext.Sequences.SingleAsync(s => s.Key == "AccountNumber");
+            seq.Value++;
+            await _bankappContext.SaveChangesAsync();
+
+            return seq.Value;
         }
     }
 }
