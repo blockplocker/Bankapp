@@ -1,0 +1,47 @@
+name: Simple CI
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+    runs-on: ${{ matrix.os }}
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        version: [9.0, 8.0]
+    
+
+    steps:
+      - name: 📜 Chockout code
+        uses: actions/checkout@v5.0.0
+
+
+      - name: show runtime context
+        run: |
+          echo "📁 Workflow: ${{ github.workflow }}"
+          echo "📦 Repository: ${{ github.repository }}"
+          echo "🌿 Branch: ${{ github.ref }}"
+          echo "🚀 Trigged by: ${{ github.event_name }}"
+          echo "🤵 Actor: ${{ github.actor }}"
+          echo " 🔧Runner OS: ${{ matrix.os }}"
+          echo "🔢 Run number: ${{ github.run_number }}"
+
+      
+
+      - name: 🛠️ Setup .NET 9
+        uses: actions/setup-dotnet@v5.0.0
+        with:
+          dotnet-version: 9.0.x
+
+      - name: 🔄️ Restore dependencies
+        working-directory: Bankapp/Bankapp
+        run: dotnet restore
+
+      - name: 🧱 Build project
+        working-directory: Bankapp/Bankapp
+        run: dotnet build --no-restore --configuration Release
+      
