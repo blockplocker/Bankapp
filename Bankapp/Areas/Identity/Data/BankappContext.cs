@@ -14,6 +14,7 @@ public class BankappContext : IdentityDbContext<BankappUser>
 
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<Sequence> Sequences { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,6 +28,9 @@ public class BankappContext : IdentityDbContext<BankappUser>
         builder.Entity<Transaction>()
             .Property(t => t.Amount)
             .HasPrecision(18, 2);
+
+        builder.Entity<Sequence>().HasData(
+        new Sequence { Key = "AccountNumber", Value = 10000000 });
 
     }
 }
