@@ -1,0 +1,38 @@
+using System.Threading.Tasks;
+using Bankapp.Areas.Identity.Data;
+using Bankapp.Models;
+using Bankapp.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace Bankapp.Pages
+{
+    [Authorize]
+    public class BankAccountPageModel(
+        AccountService _accountService,
+        UserManager<BankappUser> _userManager) : PageModel
+    {
+        public IEnumerable<Account> Accounts { get; set; } = Enumerable.Empty<Account>();
+        public Account? SelectedAccount { get; set; }
+
+        public BankappUser? CurrentUser { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public int? AccountId { get; set; }
+
+
+
+
+        public async Task OnGet()
+        {
+            CurrentUser = await _userManager.GetUserAsync(User);
+            Accounts = await _accountService.GetAccountsForUserAsync(CurrentUser.Id);
+            if(AccountId != null)
+            {
+                SelectedAccount = await _accountService.GetAccountByIdAsync(AccountId.Value);
+            }
+        }
+    }
+}
