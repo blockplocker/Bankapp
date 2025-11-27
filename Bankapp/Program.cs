@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Bankapp.Data;
 using Bankapp.Areas.Identity.Data;
+using Bankapp.Repositories;
+using Bankapp.Services;
 namespace Bankapp
 {
     public class Program
@@ -17,6 +19,12 @@ namespace Bankapp
             
             // Add services to the container.
             builder.Services.AddRazorPages();
+
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+            builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+            builder.Services.AddScoped<AccountService>();
 
             var app = builder.Build();
 
