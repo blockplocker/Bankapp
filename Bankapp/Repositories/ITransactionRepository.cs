@@ -4,10 +4,10 @@ namespace Bankapp.Repositories
 {
     public interface ITransactionRepository
     {
-        Task<Transaction> GetTransactionById(int id);
-        Task<IEnumerable<Transaction>> GetTransactionsByAccountId(int accountId);
-        Task AddTransaction(Transaction transaction);
-        Task UpdateTransaction(Transaction transaction);
-        Task DeleteTransaction(int id);
+        Task<Transaction> GetTransactionByIdAsync(int id);
+        Task<IEnumerable<Transaction>> GetTransactionsByAccountIdAsync(int accountId);
+        Task AddTransactionAsync(Transaction transaction);
+        Task UpdateTransactionAsync(Transaction transaction);
+        Task DeleteTransactionAsync(int id);
     }
 }
