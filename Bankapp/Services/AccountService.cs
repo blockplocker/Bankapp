@@ -2,14 +2,14 @@
 using Bankapp.Models;
 using Bankapp.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace Bankapp.Services
 {
-    public class AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository, BankappContext bankappContext)
+    public class AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository)
     {
         private readonly IAccountRepository _accountRepository = accountRepository;
         private readonly ITransactionRepository _TransactionRepository = transactionRepository;
-        private readonly BankappContext _bankappContext = bankappContext;
 
         public async Task<Account> CreateAccountAsync(string userId, string accountName, decimal initialDeposit = 0m)
         {
@@ -17,35 +17,35 @@ namespace Bankapp.Services
             {
                 AccountName = accountName,
                 Balance = initialDeposit,
-                AccountNumber = await GenerateAccountNumberAsync(),
+                AccountNumber = GenerateAccountNumber(),
                 UserId = userId,
                 Transactions = new List<Transaction>()
             };
 
-            await _accountRepository.AddAccount(account);
+            await _accountRepository.AddAccountAsync(account);
             return account;
         }
 
         public async Task<IEnumerable<Account>> GetAccountsForUserAsync(string userId)
         {
-            return await _accountRepository.GetAccountsByUserId(userId);
+            return await _accountRepository.GetAccountsByUserIdAsync(userId);
         }
 
         public async Task<Account?> GetAccountByIdAsync(int accountId)
         {
-            return await _accountRepository.GetAccountById(accountId);
+            return await _accountRepository.GetAccountByIdAsync(accountId);
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactionsAsync(int accountId)
         {
-            return await _TransactionRepository.GetTransactionsByAccountId(accountId);
+            return await _TransactionRepository.GetTransactionsByAccountIdAsync(accountId);
         }
 
         public async Task DepositAsync(int accountId, decimal amount)
         {
             if (amount <= 0) throw new ArgumentException("Deposit amount must be positive", nameof(amount));
 
-            var account = await _accountRepository.GetAccountById(accountId) ?? throw new InvalidOperationException("Account not found");
+            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             account.Balance += amount;
 
@@ -57,14 +57,14 @@ namespace Bankapp.Services
                 Type = TransactionType.Deposit
             };
 
-            await _TransactionRepository.AddTransaction(transaction);
+            await _TransactionRepository.AddTransactionAsync(transaction);
         }
 
         public async Task WithdrawAsync(int accountId, decimal amount)
         {
             if (amount <= 0) throw new ArgumentException("Withdrawal amount must be positive", nameof(amount));
 
-            var account = await _accountRepository.GetAccountById(accountId) ?? throw new InvalidOperationException("Account not found");
+            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             if (account.Balance < amount)
                 throw new InvalidOperationException("Insufficient funds");
@@ -79,7 +79,7 @@ namespace Bankapp.Services
                 Type = TransactionType.Withdrawal
             };
 
-            await _TransactionRepository.AddTransaction(transaction);
+            await _TransactionRepository.AddTransactionAsync(transaction);
         }
 
         public async Task TransferAsync(int fromAccountId, int toAccountId, decimal amount)
@@ -89,8 +89,8 @@ namespace Bankapp.Services
 
             // throw new InvalidOperationException("Source account not found");
             // throw new InvalidOperationException("Destination account not found");
-            Account fromAccount = await _accountRepository.GetAccountById(fromAccountId);
-            Account toAccount = await _accountRepository.GetAccountById(toAccountId);
+            Account fromAccount = await _accountRepository.GetAccountByIdAsync(fromAccountId);
+            Account toAccount = await _accountRepository.GetAccountByIdAsync(toAccountId);
 
             if (fromAccount.Balance < amount)
                 throw new InvalidOperationException("Insufficient funds in source account");
@@ -114,22 +114,19 @@ namespace Bankapp.Services
                 Type = TransactionType.Transfer
             };
 
-            await _TransactionRepository.AddTransaction(fromTransaction);
-            await _TransactionRepository.AddTransaction(toTransaction);
+            await _TransactionRepository.AddTransactionAsync(fromTransaction);
+            await _TransactionRepository.AddTransactionAsync(toTransaction);
         }
 
         public async Task<bool> AccountExistsAsync(int accountId)
         {
-            return await _accountRepository.GetAccountById(accountId) != null;
+            return await _accountRepository.GetAccountByIdAsync(accountId) != null;
         }
 
-        private async Task<int> GenerateAccountNumberAsync()
+        private int GenerateAccountNumber()
         {
-            var seq = await _bankappContext.Sequences.SingleAsync(s => s.Key == "AccountNumber");
-            seq.Value++;
-            await _bankappContext.SaveChangesAsync();
-
-            return seq.Value;
+            // random 9-digit positive account number [100000000, 999999999]
+            return RandomNumberGenerator.GetInt32(100_000_000, 1_000_000_000);
         }
     }
 }

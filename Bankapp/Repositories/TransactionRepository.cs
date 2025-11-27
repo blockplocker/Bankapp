@@ -8,27 +8,27 @@ namespace Bankapp.Repositories
     public class TransactionRepository(BankappContext context) : ITransactionRepository
     {
         public BankappContext Context { get; } = context;
-        public async Task<Transaction> GetTransactionById(int id)
+        public async Task<Transaction> GetTransactionByIdAsync(int id)
         {
             return await Context.Transactions.FindAsync(id);
         }
-        public async Task<IEnumerable<Transaction>> GetTransactionsByAccountId(int accountId)
+        public async Task<IEnumerable<Transaction>> GetTransactionsByAccountIdAsync(int accountId)
         {
             return await Context.Transactions.Where(t => t.AccountId == accountId).OrderByDescending(t => t.Date).ToListAsync();
         }
-        public async Task AddTransaction(Transaction transaction)
+        public async Task AddTransactionAsync(Transaction transaction)
         {
             Context.Transactions.AddAsync(transaction);
             await Context.SaveChangesAsync();
         }
-        public async Task UpdateTransaction(Transaction transaction)
+        public async Task UpdateTransactionAsync(Transaction transaction)
         {
             Context.Transactions.Update(transaction);
             await Context.SaveChangesAsync();
         }
-        public async Task DeleteTransaction(int id)
+        public async Task DeleteTransactionAsync(int id)
         {
-            var transaction = await GetTransactionById(id);
+            var transaction = await GetTransactionByIdAsync(id);
             if (transaction != null) {
                 Context.Transactions.Remove(transaction);
                 await Context.SaveChangesAsync();
