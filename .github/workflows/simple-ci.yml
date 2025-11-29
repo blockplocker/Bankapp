@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: 📜 Chockout code
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 
 
       - name: show runtime context
@@ -32,7 +32,7 @@ jobs:
       
 
       - name: 🛠️ Setup .NET 9
-        uses: actions/setup-dotnet@v5.0.0
+        uses: actions/setup-dotnet@bb7e7c8ce7bcdfaf9e1f5006c436bbba6fca2a7a
         with:
           dotnet-version: 9.0.x
 
