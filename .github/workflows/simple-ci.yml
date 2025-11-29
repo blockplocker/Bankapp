@@ -35,7 +35,7 @@ jobs:
       
 
       - name: 🛠️ Setup .NET 9
-        uses: actions/setup-dotnet@bb7e7c8ce7bcdfaf9e1f5006c436bbba6fca2a7a
+        uses: actions/setup-dotnet@cb3e6f12f81b0ef453c829fcf2c20d43f5a833a3
         with:
           dotnet-version: 9.0.x
 
