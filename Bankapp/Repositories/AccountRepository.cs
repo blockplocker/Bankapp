@@ -1,5 +1,6 @@
 ﻿using Bankapp.Data;
 using Bankapp.Models;
+using Bankapp.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bankapp.Repositories

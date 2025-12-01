@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
+using Bankapp.Services.Interfaces;
 
 namespace Bankapp.Areas.Identity.Pages.Account
 {
@@ -30,13 +32,15 @@ namespace Bankapp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<BankappUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IAccountService _accountService;
 
         public RegisterModel(
             UserManager<BankappUser> userManager,
             IUserStore<BankappUser> userStore,
             SignInManager<BankappUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IAccountService accountService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace Bankapp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _accountService = accountService;
         }
 
         /// <summary>
@@ -133,6 +138,7 @@ namespace Bankapp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    _accountService.CreateAccountAsync(user.Id, "Private Account", 0m).Wait();
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
