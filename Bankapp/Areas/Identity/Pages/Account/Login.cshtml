@@ -2,64 +2,49 @@
 @model LoginModel
 
 @{
-
-    Layout = null;
+    Layout = "/Pages/Shared/_Layout.cshtml";
 }
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Log in</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/login.css" />
-</head>
+<link rel="stylesheet" href="~/css/login.css" />
 
 
-<body class="login-body">
+<div class="login-body d-flex justify-content-center align-items-center">
 
     <div class="login-box">
 
-        <h3 class="text-center mb-4">Log in</h3>
+        <h3 class="text-center mb-4 fw-bold text-dark">Logga in</h3>
+
         <form id="account" method="post">
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" placeholder="email" />
-                <label asp-for="Input.Email">Email</label>
+                <input asp-for="Input.Email" class="form-control" />
+                <label asp-for="Input.Email"></label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
             <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control " placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
+                <input asp-for="Input.Password" class="form-control" />
+                <label asp-for="Input.Password"></label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
-            <div class="checkbox mb-3">
-                <label asp-for="Input.RememberMe" class="text-info">
-                    <input asp-for="Input.RememberMe" class="form-check-input" />
-                    @Html.DisplayNameFor(m => m.Input.RememberMe)
-                </label>
+            <div class="form-check mb-3">
+                <input asp-for="Input.RememberMe" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label"></label>
             </div>
 
-            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-light fw-bold">
-                Log in
+            <button id="login-submit" type="submit" class="btn btn-primary w-100">
+                Logga in
             </button>
 
-            <hr class="border-light mt-4" />
-
-            <div class="mt-3 text-center">
-                <p><a asp-page="./ForgotPassword">Forgot your password?</a></p>
-                <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a></p>
-                <p><a asp-page="./ResendEmailConfirmation">Resend email confirmation</a></p>
+            <div class="text-center mt-3">
+                <p><a asp-page="./ForgotPassword">Glömt lösenord?</a></p>
+                <p><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Skapa konto</a></p>
             </div>
+
         </form>
+
     </div>
 
-
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+</div>

@@ -14,11 +14,11 @@ html {
 
 html {
   position: relative;
-  min-height: 100%;
+  min-height: 90%;
 }
 
 body {
-  margin-bottom: 60px;
+    padding-top: 20px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +28,17 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.navbar .nav-item.login-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80px; /* gör navbaren lika hög alltid */
+
+}
+.navbar {
+    border-bottom: 3px solid;
+    color: darkblue;
 }

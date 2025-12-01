@@ -1,49 +1,64 @@
 ﻿@page
 @model Bankapp.Pages.BankAccountPageModel
 @{
+    ViewData["Title"] = "Min ekonomi";
 }
+
 <div class="container-fluid">
     <div class="row">
+        <div class="col-12 col-md-3 col-lg-2 bg-light border-end vh-100 p-4">
 
-        <div class="col-3 col-md-3 bg-white border-end vh-100 p-3">
-            <h4 class="text-primary-emphasis fw-bolder">The Good Bank</h4>
+            <h4 class="text-primary fw-bold mb-4">Bankify</h4>
             <div class="list-group">
-                <a asp-page="BankAccountPage" class="list-group-item list-group-item-action active">Min ekonomi</a>
-                <a asp-page="LÄGG IN SIDA/MODUL" class="list-group-item list-group-item-action">Betala & överföra</a>
-                <a asp-page="LÄGG IN SIDA/MODUL" class="list-group-item list-group-item-action">Min profil</a>
+                <a asp-page="BankAccountPage" class="list-group-item list-group-item-action active">
+                    Min ekonomi
+                </a>
+                <a asp-page="/TODO" class="list-group-item list-group-item-action">
+                    Betala & överföra
+                </a>
+                <a asp-page="/TODO" class="list-group-item list-group-item-action">
+                    Min profil
+                </a>
             </div>
         </div>
-        <div class="col-9 col-md-9 p-4">
-            <h2 class="mb-3">Dina konton</h2>
-            <div class="list-group">
+
+        <div class="col-12 col-md-9 col-lg-10 p-4">
+            <h2 class="mb-4 fw-semibold">Mina konton</h2>
+
+            <div class="list-group shadow-sm">
                 @foreach (var account in Model.Accounts)
                 {
-                    <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"data-bs-toggle="modal"data-bs-target="#modal-@account.AccountId">
-						<span>@account.AccountName</span>
-						<span class="fw-bold text-danger">@account.Balance kr</span>
+                    <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-@account.AccountId">
+
+                        <span class="fw-semibold">@account.AccountName</span>
+                        <span class="fw-bold text-success">@account.Balance kr</span>
                     </button>
                 }
             </div>
         </div>
+
     </div>
 </div>
 
+
 @foreach (var account in Model.Accounts)
 {
-    <div class="modal fade" id="modal-@account.AccountId" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modal-@account.AccountId" tabindex="-1">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content p-3">
-
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">@account.AccountName</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
 
                     <p><strong>Saldo:</strong> @account.Balance kr</p>
                     <p><strong>Tillgängligt:</strong> @account.Balance kr</p>
-                    <h5 class="mt-4">Transaktioner</h5>
 
+                    <h5 class="mt-4">Transaktioner</h5>
                     <ul class="list-group">
 
                         @if (account.Transactions != null && account.Transactions.Any())
@@ -51,21 +66,18 @@
                             @foreach (var t in account.Transactions.OrderByDescending(t => t.Date))
                             {
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>@t.Date.ToShortDateString() – @t.Type</span><strong>@t.Amount kr</strong>
+                                    <span>@t.Date.ToShortDateString() – @t.Type</span>
+                                    <strong>@t.Amount kr</strong>
                                 </li>
                             }
                         }
                         else
                         {
-                            <li class="list-group-item text-muted">Inga transaktioner!</li>
+                            <li class="list-group-item text-muted">Inga transaktioner</li>
                         }
-
                     </ul>
-
                 </div>
-
             </div>
         </div>
-
     </div>
 }

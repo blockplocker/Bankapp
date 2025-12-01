@@ -2,76 +2,61 @@
 @model RegisterModel
 
 @{
-    Layout = null;
+    Layout = "/Pages/Shared/_Layout.cshtml";
 }
+<link rel="stylesheet" href="~/css/registration.css" />
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Register</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/registration.css" />
-</head>
-
-<body class="register-body">
+<div class="register-body d-flex justify-content-center align-items-center">
 
     <div class="register-box">
 
-        <h3 class="text-center mb-4">Create Account</h3>
+        <h3 class="text-center mb-4 fw-bold text-dark">Skapa konto</h3>
 
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="form-floating mb-2">
-                <input asp-for="Input.Email" class="form-control" placeholder="email" />
-                <label asp-for="Input.Email">Email</label>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" />
+                <label asp-for="Input.Email"></label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-2">
-                <input asp-for="Input.FirstName" class="form-control" placeholder="First name" />
-                <label asp-for="Input.FirstName">First Name</label>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" />
+                <label asp-for="Input.FirstName"></label>
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-2">
-                <input asp-for="Input.LastName" class="form-control" placeholder="Last name" />
-                <label asp-for="Input.LastName">Last Name</label>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" />
+                <label asp-for="Input.LastName"></label>
                 <span asp-validation-for="Input.LastName" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-2">
-                <input asp-for="Input.Password" class="form-control" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" />
+                <label asp-for="Input.Password"></label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="confirm password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+            <div class="form-floating mb-4">
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <label asp-for="Input.ConfirmPassword"></label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-sm btn-light fw-bold">
-                Register
+            <button id="registerSubmit" type="submit" class="btn btn-primary w-100">
+                Skapa konto
             </button>
 
-            <hr class="border-light mt-3 mb-2" />
-
-            <div class="text-center">
-                <p style="font-size: 0.75rem;">
-                    Already have an account?
-                    <a asp-page="./Login">Log in</a>
+            <div class="text-center mt-3">
+                <p>Har du redan ett konto?
+                    <a asp-page="./Login">Logga in</a>
                 </p>
             </div>
 
         </form>
     </div>
-
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+</div>

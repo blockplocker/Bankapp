@@ -1,95 +1,19 @@
-body.login-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: url('/images/banklogin.png') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.login-body {
+    min-height: 100vh;
+    background: url('/images/banklogin.png') center/cover no-repeat fixed;
+    padding-top: 80px;
 }
 
 .login-box {
-    width: 320px;
+    width: 340px;
     padding: 28px;
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(18px) saturate(180%);
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(15px);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-    color: #222; 
+    border: 1px solid rgba(255,255,255,0.35);
+
 }
-
-.login-box h1 {
-    text-align: center;
-    margin-bottom: 24px;
-    font-weight: 600;
-    color: #111;
+.navbar {
+    border-bottom: 3px solid;
+    color: darkblue;
 }
-
-
-.login-box label {
-    color: #222;
-    font-weight: 500;
-}
-
-
-.login-box a {
-    color: #005bbb;
-    text-decoration: none;
-    font-size: 0.8rem;
-}
-
-.login-box a:hover {
-    text-decoration: underline;
-}
-
-.form-control {
-    height: 38px;
-    font-size: 0.85rem;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.55);
-    border: 1px solid rgba(200, 200, 200, 0.6);
-    color: #222;
-}
-
-.form-control::placeholder {
-    color: #666;
-}
-
-.form-control:focus {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: rgba(150, 150, 150, 0.9);
-    color: #111;
-}
-
-.form-floating > label {
-    font-size: 0.75rem;
-    color: #333;
-}
-
-.form-floating {
-    margin-bottom: 12px !important;
-}
-
-.checkbox label {
-    font-size: 0.8rem;
-}
-
-
-#login-submit {
-    height: 38px;
-    font-size: 0.85rem;
-    padding: 0;
-    border-radius: 8px;
-    background: #1976d2;
-    border: none;
-    color: white;
-    transition: 0.2s;
-}
-
-#login-submit:hover {
-    background: #0f5baa;
-}
-
-
