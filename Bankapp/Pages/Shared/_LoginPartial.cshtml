@@ -3,28 +3,59 @@
 
 @inject SignInManager<BankappUser> SignInManager
 @inject UserManager<BankappUser> UserManager
+
 @{
     var currentUser = await UserManager.GetUserAsync(User);
 }
-<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark fw-bold" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@currentUser.FirstName @currentUser.LastName</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/BankAccountPage", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+
+<ul class="navbar-nav align-items-center">
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+
+        <li class="nav-item d-flex align-items-center">
+
+            <div class="text-center me-3">
+                <i class="bi bi-person fs-3 text-light"></i>
+                <div class="small fw-semibold text-light">
+                    @currentUser.FirstName @currentUser.LastName
+                </div>
+            </div>
+
+            <form method="post" asp-area="Identity" asp-page="/Account/Logout"
+                  asp-route-returnUrl="@Url.Page("/BankAccountPage")">
+
+                <button class="btn p-0 border-0 bg-transparent text-center">
+
+                    <i class="bi bi-unlock-fill fs-3 text-light"></i>
+
+
+                    <div class="small fw-semibold text-light">
+                        Logga ut
+                    </div>
+
+                </button>
+            </form>
+
+        </li>
+    }
+    else
+    {
+
+        <li class="nav-item text-center me-3">
+
+            <a class="nav-link text-light d-flex flex-column align-items-center"
+               asp-area="Identity" asp-page="/Account/Login">
+
+                <i class="bi bi-person fs-3"></i>
+
+                <div class="small fw-semibold text-light">
+                    Logga in
+                </div>
+            </a>
+
+        </li>
+
+
+    }
 </ul>

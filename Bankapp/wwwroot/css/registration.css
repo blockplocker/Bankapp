@@ -1,68 +1,19 @@
-﻿body.register-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: url('/images/banklogin.png') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+﻿.register-body {
+    min-height: 100vh;
+    background: url('/images/banklogin.png') center/cover no-repeat fixed;
+    padding-top: 80px;
 }
 
 .register-box {
-    width: 320px;
-    padding: 28px;
-    background: rgba(255, 255, 255, 0.35); 
-    backdrop-filter: blur(18px) saturate(180%);
+    width: 340px;
+    padding: 30px;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(15px);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.45); 
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15); 
-    color: #333; 
+    border: 1px solid rgba(255,255,255,0.35);
+
 }
-
-.register-box h3 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #222; 
-}
-
-.form-control {
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(200, 200, 200, 0.6);
-    color: #333;
-}
-
-.form-control::placeholder {
-    color: #666;
-}
-
-.form-control:focus {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: rgba(150, 150, 150, 0.9);
-    color: #111;
-}
-
-
-.form-floating > label {
-    font-size: 0.8rem;
-    color: #333;
-}
-
-.form-floating {
-    margin-bottom: 12px !important;
-}
-
-#registerSubmit {
-    height: 40px;
-    font-size: 0.9rem;
-    border-radius: 8px;
-    background: #1976d2;
-    border: none;
-    color: white;
-    transition: 0.2s;
-}
-
-#registerSubmit:hover {
-    background: #0f5baa;
+.navbar {
+    border-bottom: 3px solid;
+    color: darkblue;
 }
