@@ -1,7 +1,6 @@
-using System.Threading.Tasks;
 using Bankapp.Areas.Identity.Data;
 using Bankapp.Models;
-using Bankapp.Services;
+using Bankapp.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ namespace Bankapp.Pages
 {
     [Authorize]
     public class BankAccountPageModel(
-        AccountService _accountService,
+        IAccountService _accountService,
         UserManager<BankappUser> _userManager) : PageModel
     {
         public IEnumerable<Account> Accounts { get; set; } = Enumerable.Empty<Account>();

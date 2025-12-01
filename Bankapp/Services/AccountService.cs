@@ -1,17 +1,18 @@
 ﻿using Bankapp.Models;
-using Bankapp.Repositories;
+using Bankapp.Repositories.Interfaces;
+using Bankapp.Services.Interfaces;
 using System.Security.Cryptography;
 
 namespace Bankapp.Services
 {
-    public class AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository)
+    public class AccountService(IAccountRepository accountRepository, ITransactionRepository transactionRepository) : IAccountService
     {
         private readonly IAccountRepository _accountRepository = accountRepository;
         private readonly ITransactionRepository _TransactionRepository = transactionRepository;
 
         public async Task<Account> CreateAccountAsync(string userId, string accountName, decimal initialDeposit = 0m)
         {
-            Account account = new(accountName, initialDeposit, GenerateAccountNumber(), userId, []);
+            Account account = new(accountName, initialDeposit, GenerateAccountNumber(), userId);
 
             await _accountRepository.AddAccountAsync(account);
             return account;
