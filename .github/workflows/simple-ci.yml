@@ -1,8 +1,6 @@
 name: Simple CI
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
@@ -14,13 +12,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        version: [9.0, 8.0]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: 📜 Chockout code
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
-
 
       - name: show runtime context
         run: |
@@ -32,7 +28,6 @@ jobs:
           echo " 🔧Runner OS: ${{ matrix.os }}"
           echo "🔢 Run number: ${{ github.run_number }}"
 
-      
 
       - name: 🛠️ Setup .NET 9
         uses: actions/setup-dotnet@v5
