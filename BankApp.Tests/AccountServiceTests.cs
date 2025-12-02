@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Bankapp.Models;
 using Bankapp.Services;
+using Microsoft.Identity.Client;
 using Moq;
 using Xunit;
 
@@ -105,4 +106,42 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
             a.Balance == 50m
         )), Times.Once);
     }
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-0.1)]
+    public async Task DepositAsync_ThrowsArgumentException_WhenAmountIsZeroOrBelow(decimal amount)
+    {  
+        //Act and Assert
+        await Assert.ThrowsAsync<ArgumentException>(()   
+            => _fixture.Sut.DepositAsync(1, amount));  
+    }
+    
+    [Fact]
+    public async Task DepositAsync_ThrowsInvalidOperationException_When_AccountNotFound()
+    {
+        //Arrange
+        _fixture.AccountRepoMock
+            .Setup(x => x.GetAccountByIdAsync(1))
+            .ReturnsAsync((Account)null!);
+        //Act and Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(1, 5000));
+    }
+
+    [Fact]
+    public async Task DepositAsync_ShouldCall_AddAccountByIdAsync()
+    {
+        //Arrange
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
+        //Act and Assert
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Once);
+    }
+    
+    
+    
+    
+    
+    
 }
