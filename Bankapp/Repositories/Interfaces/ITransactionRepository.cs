@@ -1,6 +1,6 @@
 ﻿using Bankapp.Models;
 
-namespace Bankapp.Repositories
+namespace Bankapp.Repositories.Interfaces
 {
     public interface ITransactionRepository
     {

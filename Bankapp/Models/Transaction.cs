@@ -7,9 +7,9 @@ namespace Bankapp.Models
         public decimal Amount { get; set; } = amount;
         public DateTime Date { get; set; } = date;
         public TransactionType Type { get; set; } = type;
-
-
         public int AccountId { get; set; } = accountId;
+        
+        // Navigation properties
         public Account Account { get; set; }
     }
 }
