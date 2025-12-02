@@ -39,6 +39,6 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: 🧪 Test project
-        working-directory: Bankapp/Bankapp.Tests
+        working-directory: Bankapp.Tests
         run: dotnet test --no-build
       
