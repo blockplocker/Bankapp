@@ -1,4 +1,4 @@
-name: Simple CI
+name: Build And test
 on:
   workflow_dispatch:
   pull_request:
@@ -9,15 +9,11 @@ permissions:
 
 jobs:
   build:
-    # strategy:
-      # matrix:
-        # os: [ubuntu-latest, windows-latest]
-    # runs-on: ${{ matrix.os }}
     runs-on: ubuntu-latest
 
     steps:
       - name: 📜 Checkout code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+        uses: actions/checkout@v5
 
       - name: show runtime context
         run: |
@@ -26,9 +22,8 @@ jobs:
           echo "🌿 Branch: ${{ github.ref }}"
           echo "🚀 Trigged by: ${{ github.event_name }}"
           echo "🤵 Actor: ${{ github.actor }}"
-          echo " 🔧Runner OS: ${{ matrix.os }}"
+          echo " 🔧Runner OS: ${{ runner.os }}"
           echo "🔢 Run number: ${{ github.run_number }}"
-
 
       - name: 🛠️ Setup .NET 9
         uses: actions/setup-dotnet@v5
