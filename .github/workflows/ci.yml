@@ -31,14 +31,11 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: 🔄️ Restore dependencies
-        working-directory: Bankapp
         run: dotnet restore
 
       - name: 🧱 Build project
-        working-directory: Bankapp
         run: dotnet build --no-restore --configuration Release
 
       - name: 🧪 Test project
-        working-directory: Bankapp.Tests
         run: dotnet test --no-build
       
