@@ -19,7 +19,7 @@ namespace Bankapp.Services
             if (initialDeposit < 0)
                 throw new ArgumentException("Initial deposit cannot be negative.", nameof(initialDeposit));
 
-            Account account = new(accountName, initialDeposit, GenerateAccountNumber(), userId, []);
+            Account account = new(accountName, initialDeposit, GenerateAccountNumber(), userId);
 
             await _accountRepository.AddAccountAsync(account);
             return account;
