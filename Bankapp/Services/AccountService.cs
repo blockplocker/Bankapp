@@ -11,6 +11,13 @@ namespace Bankapp.Services
 
         public async Task<Account> CreateAccountAsync(string userId, string accountName, decimal initialDeposit = 0m)
         {
+            if (string.IsNullOrWhiteSpace(userId))
+                throw new ArgumentException("UserId must not be null or empty.", nameof(userId));
+            if (string.IsNullOrWhiteSpace(accountName))
+                throw new ArgumentException("AccountName must not be null or empty.", nameof(accountName));
+            if (initialDeposit < 0)
+                throw new ArgumentException("Initial deposit cannot be negative.", nameof(initialDeposit));
+
             Account account = new(accountName, initialDeposit, GenerateAccountNumber(), userId, []);
 
             await _accountRepository.AddAccountAsync(account);
