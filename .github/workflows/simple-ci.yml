@@ -9,13 +9,14 @@ permissions:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    # strategy:
+      # matrix:
+        # os: [ubuntu-latest, windows-latest]
+    # runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
-      - name: 📜 Chockout code
+      - name: 📜 Checkout code
         uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 
       - name: show runtime context
@@ -41,4 +42,7 @@ jobs:
       - name: 🧱 Build project
         working-directory: Bankapp
         run: dotnet build --no-restore --configuration Release
+
+      - name: 🧪 Test project
+        run: dotnet test --no-build
       
