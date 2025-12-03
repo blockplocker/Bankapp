@@ -113,11 +113,29 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     [InlineData(0)]
     [InlineData(-1)]
     [InlineData(-0.1)]
-    public async Task DepositAsync_ThrowsArgumentException_WhenAmountIsZeroOrBelow(decimal amount)
+    public async Task DepositAsync_ThrowsArgumentException_AndNotCallRepository_WhenAmountIsZeroOrBelow(decimal amount)
     {  
         //Act and Assert
         await Assert.ThrowsAsync<ArgumentException>(()   
             => _fixture.Sut.DepositAsync(1, amount));  
+        
+        _fixture.AccountRepoMock
+            .Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Never);
+
+        _fixture.TransactionRepoMock
+            .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()), Times.Never);
+    }
+    
+    
+    [Fact]
+    public async Task DepositAsync_ShouldCall_AddAccountByIdAsync()
+    {
+        //Arrange
+        _fixture.Sut.DepositAsync(1,5000);
+        _fixture.AccountRepoMock .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
+        
+        //Act and Assert
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Once);
     }
     
     
@@ -134,16 +152,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     }
 
     
-    [Fact]
-    public async Task DepositAsync_ShouldCall_AddAccountByIdAsync()
-    {
-         //Arrange
-        _fixture.Sut.DepositAsync(1,5000);
-        _fixture.AccountRepoMock .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
-        
-        //Act and Assert
-        _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Once);
-    }
+    
     
     [Theory]
     [InlineData(1000, 500, 1500)]
