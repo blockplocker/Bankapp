@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using Bankapp.Models;
 using Bankapp.Services;
+using Microsoft.Identity.Client;
 using Moq;
+using NuGet.ContentModel;
 using Xunit;
 
 namespace BankApp.Tests;
@@ -107,6 +109,75 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
             a.Balance == 50m
         )), Times.Once);
     }
+    
+    
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-0.1)]
+    public async Task DepositAsync_ThrowsArgumentException_AndNotCallRepository_WhenAmountIsZeroOrBelow(decimal amount)
+    {  
+        //Act and Assert
+        await Assert.ThrowsAsync<ArgumentException>(()   
+            => _fixture.Sut.DepositAsync(1, amount));  
+        
+        _fixture.AccountRepoMock
+            .Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Never);
+
+        _fixture.TransactionRepoMock
+            .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()), Times.Never);
+    }
+    
+    
+    [Fact]
+    public async Task DepositAsync_ShouldCall_AddAccountByIdAsync()
+    {
+        //Arrange
+        _fixture.Sut.DepositAsync(1,5000);
+        _fixture.AccountRepoMock .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
+        
+        //Act and Assert
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Once);
+    }
+    
+    
+    [Fact]
+    public async Task DepositAsync_ThrowsInvalidOperationException_When_AccountNotFound()
+    {
+        //Arrange
+        _fixture.AccountRepoMock
+            .Setup(x => x.GetAccountByIdAsync(1))
+            .ReturnsAsync((Account)null!);
+        
+        //Act and Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(1, 5000));
+    }
+
+    [Theory]
+    [InlineData(1000, 500, 1500)]
+    [InlineData(200, 300, 500)]
+    [InlineData(0, 1000, 1000)]
+    public async Task DepositAsync_IncreaseBalance(decimal balance, decimal deposit, decimal expected)
+    {
+        // Arrange
+        
+        var testAccount = new Account("BusinessAccount",balance, 123456789, "TestUserId");
+        
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAccountByIdAsync(1))
+            .ReturnsAsync(testAccount);
+        
+         // Act
+        await _fixture.Sut.DepositAsync(1, deposit);
+
+        // Assert
+        Assert.Equal(expected, testAccount.Balance);
+    }
+
+
+    
+
+
 
     [Fact]
     public async Task GetAccountsForUserAsync_ShouldReturnAccounts_WhenAccountsExist()
