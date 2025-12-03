@@ -3,6 +3,7 @@ using Bankapp.Models;
 using Bankapp.Services;
 using Microsoft.Identity.Client;
 using Moq;
+using NuGet.ContentModel;
 using Xunit;
 
 namespace BankApp.Tests;
@@ -107,6 +108,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         )), Times.Once);
     }
     
+    
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
@@ -118,6 +120,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
             => _fixture.Sut.DepositAsync(1, amount));  
     }
     
+    
     [Fact]
     public async Task DepositAsync_ThrowsInvalidOperationException_When_AccountNotFound()
     {
@@ -125,23 +128,46 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         _fixture.AccountRepoMock
             .Setup(x => x.GetAccountByIdAsync(1))
             .ReturnsAsync((Account)null!);
+        
         //Act and Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(1, 5000));
     }
 
+    
     [Fact]
     public async Task DepositAsync_ShouldCall_AddAccountByIdAsync()
     {
-        //Arrange
-        _fixture.AccountRepoMock
-            .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
+         //Arrange
+        _fixture.Sut.DepositAsync(1,5000);
+        _fixture.AccountRepoMock .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
+        
         //Act and Assert
         _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Once);
     }
     
+    [Theory]
+    [InlineData(1000, 500, 1500)]
+    [InlineData(200, 300, 500)]
+    [InlineData(0, 1000, 1000)]
+    public async Task DepositAsync_IncreaseBalance(decimal balance, decimal deposit, decimal expected)
+    {
+        // Arrange
+        
+        var testAccount = new Account("BusinessAccount",balance, 123456789, "TestUserId");
+        
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAccountByIdAsync(1))
+            .ReturnsAsync(testAccount);
+        
+         // Act
+        await _fixture.Sut.DepositAsync(1, deposit);
+
+        // Assert
+        Assert.Equal(expected, testAccount.Balance);
+    }
+
+
     
-    
-    
-    
-    
+
+
 }
