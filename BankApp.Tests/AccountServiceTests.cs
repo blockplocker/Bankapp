@@ -115,11 +115,14 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     [InlineData(0)]
     [InlineData(-1)]
     [InlineData(-0.1)]
-    public async Task DepositAsync_ThrowsArgumentException_AndNotCallRepository_WhenAmountIsZeroOrBelow(decimal amount)
+    public async Task DepositAsync_ThrowsArgumentException_AndDoesntCallRepository_WhenAmountIsZeroOrBelow(decimal amount)
     {  
+        //Arrange
+        const int accountId = 17;
+        
         //Act and Assert
         await Assert.ThrowsAsync<ArgumentException>(()   
-            => _fixture.Sut.DepositAsync(1, amount));  
+            => _fixture.Sut.DepositAsync(accountId, amount));  
         
         _fixture.AccountRepoMock
             .Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Never);
@@ -130,27 +133,39 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     
     
     [Fact]
-    public async Task DepositAsync_ShouldCall_AddAccountByIdAsync()
+    public async Task DepositAsync_CallsGetAccountByIdAsync()
     {
         //Arrange
-        _fixture.Sut.DepositAsync(1,5000);
-        _fixture.AccountRepoMock .Setup(r => r.GetAccountByIdAsync(It.IsAny<int>()));
-        
-        //Act and Assert
-        _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Once);
+        const int accountId = 17;
+        Account testAccount = new Account("BusinessAccount",1000, 123456789, "TestUserId");
+       
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAccountByIdAsync(accountId))
+            .ReturnsAsync(testAccount);
+       
+        //Act
+        await _fixture.Sut.DepositAsync(accountId, 5000);
+       
+        //Assert
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByIdAsync(accountId),Times.Once);
     }
     
     
     [Fact]
-    public async Task DepositAsync_ThrowsInvalidOperationException_When_AccountNotFound()
+    public async Task DepositAsync_ThrowsInvalidOperationException_AndDoesntCallTransactionRep_WhenAccountNotFound()
     {
         //Arrange
+        const int accountId = 17;
+        Decimal amount = 5000;
         _fixture.AccountRepoMock
-            .Setup(x => x.GetAccountByIdAsync(1))
+            .Setup(x => x.GetAccountByIdAsync(accountId))
             .ReturnsAsync((Account)null!);
         
         //Act and Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(1, 5000));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(accountId, amount));
+        
+        _fixture.TransactionRepoMock
+            .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()), Times.Never);
     }
 
     [Theory]
@@ -160,18 +175,49 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     public async Task DepositAsync_IncreaseBalance(decimal balance, decimal deposit, decimal expected)
     {
         // Arrange
-        
-        var testAccount = new Account("BusinessAccount",balance, 123456789, "TestUserId");
+        const int accountId = 17;
+        var testAccount = new Account("BusinessAccount",balance, 123456789, "TestUserId")
+        {
+            AccountId = accountId
+        };
         
         _fixture.AccountRepoMock
-            .Setup(r => r.GetAccountByIdAsync(1))
+            .Setup(r => r.GetAccountByIdAsync(accountId))
             .ReturnsAsync(testAccount);
         
          // Act
-        await _fixture.Sut.DepositAsync(1, deposit);
+        await _fixture.Sut.DepositAsync(accountId, deposit);
 
         // Assert
         Assert.Equal(expected, testAccount.Balance);
+    }
+
+    [Fact]
+    public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransaction()
+    {
+        //Arrange
+        const int AccountId = 17;
+        decimal amount = 1000;
+        Account testAccount = new Account("BusinessAccount", 1000, 123456789, "TestUserId");
+        Transaction testTransaction = null;
+        
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAccountByIdAsync(AccountId))
+            .ReturnsAsync(testAccount);
+
+        _fixture.TransactionRepoMock
+            .Setup(r => r.AddTransactionAsync(It.IsAny<Transaction>()))
+            .Callback<Transaction>(transaction => testTransaction = transaction)
+            .Returns(Task.CompletedTask);
+
+        //Act
+        await _fixture.Sut.DepositAsync(AccountId, amount);
+        
+        //Assert
+        Assert.NotNull(testTransaction);
+        Assert.Equal(testTransaction.Amount, amount);
+        Assert.Equal(testTransaction.AccountId, AccountId);
+        Assert.Equal(TransactionType.Deposit, testTransaction.Type);
     }
 
 
@@ -260,7 +306,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         Account? expectedAccount = null;
 
         _fixture.AccountRepoMock
-            .Setup(repo => repo.GetAccountByIdAsync(accountId))
+            .Setup(repo => repo.GetAccountByIdAsync(accountId))!
             .ReturnsAsync((Account?)expectedAccount);
 
         // Act
