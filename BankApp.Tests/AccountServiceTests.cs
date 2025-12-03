@@ -151,9 +151,6 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(1, 5000));
     }
 
-    
-    
-    
     [Theory]
     [InlineData(1000, 500, 1500)]
     [InlineData(200, 300, 500)]
