@@ -23,7 +23,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     public async Task CreateAccountAsync_CreatesAccountWithCorrectProperties_AndCallsRepository()
     {
         _fixture.AccountRepoMock.Invocations.Clear();
-        // Arrange
+        
         var userId = "user1";
         var accountName = "Test Account";
         var initialDeposit = 100m;
@@ -32,10 +32,10 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
             .Callback<Account>(acc => capturedAccount = acc)
             .Returns(Task.CompletedTask);
 
-        // Act
+        
         var result = await _fixture.Sut.CreateAccountAsync(userId, accountName, initialDeposit);
 
-        // Assert
+       
         Assert.NotNull(result);
         Assert.Equal(accountName, result.AccountName);
         Assert.Equal(initialDeposit, result.Balance);
@@ -50,15 +50,15 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
     public async Task CreateAccountAsync_DefaultsInitialDepositToZero()
     {
         _fixture.AccountRepoMock.Invocations.Clear();
-        // Arrange
+        
         var userId = "user2";
         var accountName = "NoDepositAccount";
         _fixture.AccountRepoMock.Setup(r => r.AddAccountAsync(It.IsAny<Account>())).Returns(Task.CompletedTask);
 
-        // Act
+        
         var result = await _fixture.Sut.CreateAccountAsync(userId, accountName);
 
-        // Assert
+        
         Assert.NotNull(result);
         Assert.Equal(0m, result.Balance);
         Assert.Equal(accountName, result.AccountName);
