@@ -98,6 +98,15 @@ namespace Bankapp.Services
             return await _accountRepository.GetAccountByIdAsync(accountId) != null;
         }
 
+        public async Task RenameAccountAsync(int accountId, string newAccountName)
+        {
+            if (string.IsNullOrWhiteSpace(newAccountName))
+                throw new ArgumentException("Kontonamn får inte vara tomt.", nameof(newAccountName));
+            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            account.AccountName = newAccountName;
+            await _accountRepository.UpdateAccountAsync(account);
+        }
+
         private static int GenerateAccountNumber()
         {
             // random 9-digit positive account number [100000000, 999999999]
