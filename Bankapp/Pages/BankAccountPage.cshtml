@@ -32,8 +32,10 @@
                     <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                             data-bs-toggle="modal"
                             data-bs-target="#modal-@account.AccountId">
-
-                        <span class="fw-semibold">@account.AccountName</span>
+                        <div>
+                            <span class="fw-semibold">@account.AccountName</span><br />
+                            <small class="text-muted">Kontonummer: @account.AccountNumber</small>
+                        </div>
                         <span class="fw-bold text-success">@account.Balance kr</span>
                     </button>
                 }
@@ -55,13 +57,12 @@
                 </div>
 
                 <div class="modal-body">
-
+                    <p><strong>Kontonummer:</strong> @account.AccountNumber</p>
                     <p><strong>Saldo:</strong> @account.Balance kr</p>
                     <p><strong>Tillgängligt:</strong> @account.Balance kr</p>
-
+                    <a asp-page="RenameAccount" asp-route-accountId="@account.AccountId" class="btn btn-outline-secondary mb-3">Byt namn</a>
                     <h5 class="mt-4">Transaktioner</h5>
                     <ul class="list-group">
-
                         @if (account.Transactions != null && account.Transactions.Any())
                         {
                             @foreach (var t in account.Transactions.OrderByDescending(t => t.Date))
