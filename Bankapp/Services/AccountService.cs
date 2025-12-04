@@ -47,6 +47,7 @@ namespace Bankapp.Services
             var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             account.Balance += amount;
+            await _accountRepository.UpdateAccountAsync(account);
 
             var transaction = new Transaction(accountId, amount, DateTime.UtcNow, TransactionType.Deposit);
 
@@ -63,6 +64,7 @@ namespace Bankapp.Services
                 throw new InvalidOperationException("Insufficient funds");
 
             account.Balance -= amount;
+            await _accountRepository.UpdateAccountAsync(account);
 
             Transaction transaction = new(accountId, amount, DateTime.UtcNow, TransactionType.Withdrawal);
 
@@ -84,6 +86,8 @@ namespace Bankapp.Services
 
             fromAccount.Balance -= amount;
             toAccount.Balance += amount;
+            await _accountRepository.UpdateAccountAsync(fromAccount);
+            await _accountRepository.UpdateAccountAsync(toAccount);
 
             Transaction fromTransaction = new(fromAccountId, -amount, DateTime.UtcNow, TransactionType.Transfer);
 
