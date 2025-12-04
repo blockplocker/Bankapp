@@ -1,0 +1,47 @@
+@page
+@model Bankapp.Pages.TransferModel
+@{
+    ViewData["Title"] = "Överför pengar";
+}
+
+<h2>Överför pengar mellan konton</h2>
+
+<form method="post">
+    <div class="form-floating mb-3">
+        <select asp-for="Input.FromAccountId" class="form-select">
+            <option value="">Välj från-konto</option>
+            @foreach (var acc in Model.UserAccounts)
+            {
+                <option value="@acc.AccountId">@acc.AccountName (@acc.Balance kr)</option>
+            }
+        </select>
+        <label asp-for="Input.FromAccountId">Från konto</label>
+        <span asp-validation-for="Input.FromAccountId" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <select asp-for="Input.ToAccountId" class="form-select">
+            <option value="">Välj till-konto</option>
+            @foreach (var acc in Model.UserAccounts)
+            {
+                <option value="@acc.AccountId">@acc.AccountName (@acc.Balance kr)</option>
+            }
+        </select>
+        <label asp-for="Input.ToAccountId">Till konto</label>
+        <span asp-validation-for="Input.ToAccountId" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-3">
+        <input asp-for="Input.Amount" class="form-control" placeholder="Belopp" type="number" step="0.01" />
+        <label asp-for="Input.Amount">Belopp (kr)</label>
+        <span asp-validation-for="Input.Amount" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Överför</button>
+</form>
+
+@if (Model.StatusMessage != null)
+{
+    <div class="alert alert-info mt-3">@Model.StatusMessage</div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
