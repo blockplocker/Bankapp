@@ -3,23 +3,27 @@
 @{
     ViewData["Title"] = "Skapa nytt konto";
 }
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <h2 class="mb-4 text-center">Skapa nytt konto</h2>
 
-<h2>Skapa nytt konto</h2>
-
-<form method="post">
-    <div class="form-floating mb-3">
-        <input asp-for="Input.AccountName" class="form-control" placeholder="Kontonamn" />
-        <label asp-for="Input.AccountName">Kontonamn</label>
-        <span asp-validation-for="Input.AccountName" class="text-danger"></span>
+            <form method="post" class="p-4 border rounded shadow-sm bg-white">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.AccountName" class="form-control" placeholder="Kontonamn" />
+                    <label asp-for="Input.AccountName">Kontonamn</label>
+                    <span asp-validation-for="Input.AccountName" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.InitialDeposit" class="form-control" placeholder="Startinsättning" type="number" step="0.01" />
+                    <label asp-for="Input.InitialDeposit">Startinsättning (kr)</label>
+                    <span asp-validation-for="Input.InitialDeposit" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Skapa konto</button>
+            </form>
+        </div>
     </div>
-    <div class="form-floating mb-3">
-        <input asp-for="Input.InitialDeposit" class="form-control" placeholder="Startinsättning" type="number" step="0.01" />
-        <label asp-for="Input.InitialDeposit">Startinsättning (kr)</label>
-        <span asp-validation-for="Input.InitialDeposit" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Skapa konto</button>
-</form>
-
+</div>
 @if (Model.StatusMessage != null)
 {
     <div class="alert alert-info mt-3">@Model.StatusMessage</div>
