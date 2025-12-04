@@ -66,7 +66,7 @@ namespace Bankapp.Services
             account.Balance -= amount;
             await _accountRepository.UpdateAccountAsync(account);
 
-            Transaction transaction = new(accountId, amount, DateTime.UtcNow, TransactionType.Withdrawal);
+            Transaction transaction = new(accountId, -amount, DateTime.UtcNow, TransactionType.Withdrawal);
 
             await _TransactionRepository.AddTransactionAsync(transaction);
         }

@@ -1,13 +1,13 @@
 ﻿@page
-@model Bankapp.Pages.DepositModel
+@model Bankapp.Pages.WithdrawModel
 @{
-    ViewData["Title"] = "Sätt in pengar";
+    ViewData["Title"] = "Ta ut pengar";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
-            <h2 class="mb-4 text-center">Sätt in pengar</h2>
+            <h2 class="mb-4 text-center">Ta ut pengar</h2>
 
             <form method="post" class="p-4 border rounded shadow-sm bg-white">
                 <div class="form-floating mb-3">
@@ -26,7 +26,7 @@
                     <label asp-for="Input.Amount">Belopp (kr)</label>
                     <span asp-validation-for="Input.Amount" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 mt-2">Sätt in</button>
+                <button type="submit" class="btn btn-primary w-100 mt-2">Ta ut</button>
             </form>
 
             @if (Model.StatusMessage != null)

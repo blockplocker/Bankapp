@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Bankapp.Pages
 {
-    public class DepositModel(IAccountService accountService) : PageModel
+    public class WithdrawModel(IAccountService accountService) : PageModel
     {
         private readonly IAccountService _accountService = accountService;
 
@@ -48,8 +48,8 @@ namespace Bankapp.Pages
             }
             try
             {
-                await _accountService.DepositAsync(Input.AccountId!.Value, Input.Amount);
-                StatusMessage = "Insättning genomförd!";
+                await _accountService.WithdrawAsync(Input.AccountId!.Value, Input.Amount);
+                StatusMessage = "Utag genomförd!";
                 return RedirectToPage("BankAccountPage");
             }
             catch (Exception ex)
