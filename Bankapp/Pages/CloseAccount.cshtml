@@ -1,0 +1,17 @@
+@page "{accountId:int}"
+@model Bankapp.Pages.CloseAccountModel
+@{
+    ViewData["Title"] = "Stäng konto";
+}
+
+<h2>Stäng konto</h2>
+<p>Är du säker på att du vill stänga detta konto? Alla transaktioner och saldot kommer att tas bort.</p>
+<form method="post">
+    <button type="submit" class="btn btn-danger">Stäng konto</button>
+    <a asp-page="BankAccountPage" class="btn btn-secondary ms-2">Avbryt</a>
+</form>
+
+@if (Model.StatusMessage != null)
+{
+    <div class="alert alert-info mt-3">@Model.StatusMessage</div>
+}
