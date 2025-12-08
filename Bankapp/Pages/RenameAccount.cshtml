@@ -3,19 +3,23 @@
 @{
     ViewData["Title"] = "Byt namn på konto";
 }
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <h2 class="mb-4 text-center">Byt namn på konto</h2>
 
-<h2>Byt namn på konto</h2>
-
-<form method="post">
-    <div class="form-floating mb-3">
-        <input asp-for="Input.NewAccountName" class="form-control" placeholder="Nytt kontonamn" />
-        <label asp-for="Input.NewAccountName">Nytt kontonamn</label>
-        <span asp-validation-for="Input.NewAccountName" class="text-danger"></span>
+            <form method="post" class="p-4 border rounded shadow-sm bg-white">
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.NewAccountName" class="form-control" placeholder="Nytt kontonamn" />
+                    <label asp-for="Input.NewAccountName">Nytt kontonamn</label>
+                    <span asp-validation-for="Input.NewAccountName" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Spara namnändring</button>
+                <a asp-page="BankAccountPage" class="btn btn-secondary ms-2">Avbryt</a>
+            </form>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Spara namnändring</button>
-    <a asp-page="BankAccountPage" class="btn btn-secondary ms-2">Avbryt</a>
-</form>
-
+</div>
 @if (Model.StatusMessage != null)
 {
     <div class="alert alert-info mt-3">@Model.StatusMessage</div>

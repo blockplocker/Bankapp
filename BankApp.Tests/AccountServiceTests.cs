@@ -220,11 +220,6 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         Assert.Equal(TransactionType.Deposit, testTransaction.Type);
     }
 
-
-    
-
-
-
     [Fact]
     public async Task GetAccountsForUserAsync_ShouldReturnAccounts_WhenAccountsExist()
     {
@@ -546,5 +541,59 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
             int num = (int)method.Invoke(null, null)!;
             Assert.True(num < 1_000_000_000, $"Number {num} should be less than 1,000,000,000");
         }
+    }
+
+    [Fact]
+    public async Task GetAcountIdByAccountNumberAsync_ReturnsAccountId_WhenAccountExists()
+    {
+        // Arrange
+        const int accountNumber = 123456789;
+        var expectedAccount = new Account("Checking", 1000m, accountNumber, "user123") { AccountId = 77 };
+
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAcountByAccountNumberAsync(accountNumber))
+            .ReturnsAsync(expectedAccount);
+
+        // Act
+        var result = await _fixture.Sut.GetAcountIdByAccountNumberAsync(accountNumber);
+
+        // Assert
+        Assert.Equal(expectedAccount.AccountId, result);
+        _fixture.AccountRepoMock.Verify(r => r.GetAcountByAccountNumberAsync(accountNumber), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAcountIdByAccountNumberAsync_ThrowsInvalidOperationException_WhenAccountDoesNotExist()
+    {
+        // Arrange
+        const int accountNumber = 987654321;
+
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAcountByAccountNumberAsync(accountNumber))
+            .ReturnsAsync((Account?)null);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.GetAcountIdByAccountNumberAsync(accountNumber));
+
+        _fixture.AccountRepoMock.Verify(r => r.GetAcountByAccountNumberAsync(accountNumber), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAcountIdByAccountNumberAsync_CallsRepositoryWithCorrectAccountNumber()
+    {
+        // Arrange
+        const int accountNumber = 555000111;
+        var expectedAccount = new Account("Savings", 50m, accountNumber, "userX") { AccountId = 9 };
+
+        _fixture.AccountRepoMock
+            .Setup(r => r.GetAcountByAccountNumberAsync(It.IsAny<int>()))
+            .ReturnsAsync(expectedAccount);
+
+        // Act
+        var result = await _fixture.Sut.GetAcountIdByAccountNumberAsync(accountNumber);
+
+        // Assert
+        Assert.Equal(expectedAccount.AccountId, result);
+        _fixture.AccountRepoMock.Verify(r => r.GetAcountByAccountNumberAsync(accountNumber), Times.Once);
     }
 }

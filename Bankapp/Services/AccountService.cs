@@ -111,6 +111,16 @@ namespace Bankapp.Services
             await _accountRepository.UpdateAccountAsync(account);
         }
 
+        public async Task<int> GetAcountIdByAccountNumberAsync(int accountNumber)
+        {
+            var Account = await _accountRepository.GetAcountByAccountNumberAsync(accountNumber);
+            if (Account == null)
+            {
+                throw new InvalidOperationException("Account not found");
+            }
+            return Account.AccountId;
+        }
+
         private static int GenerateAccountNumber()
         {
             // random 9-digit positive account number [100000000, 999999999]

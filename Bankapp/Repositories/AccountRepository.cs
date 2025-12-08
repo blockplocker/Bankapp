@@ -9,7 +9,7 @@ namespace Bankapp.Repositories
     {
         public BankappContext Context { get; } = context;
 
-        public async Task<Account> GetAccountByIdAsync(int id)
+        public async Task<Account?> GetAccountByIdAsync(int id)
         {
             return await Context.Accounts.FindAsync(id);
         }
@@ -31,6 +31,10 @@ namespace Bankapp.Repositories
         {
             Context.Accounts.Remove(await GetAccountByIdAsync(id));
             await Context.SaveChangesAsync();
+        }
+        public async Task<Account?> GetAcountByAccountNumberAsync(int accountNumber)
+        {
+            return await Context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
         }
     }
 }
