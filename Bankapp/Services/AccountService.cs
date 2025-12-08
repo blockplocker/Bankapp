@@ -111,6 +111,16 @@ namespace Bankapp.Services
             await _accountRepository.UpdateAccountAsync(account);
         }
 
+        public async Task CloseAccountAsync(int accountId)
+        {
+            var account = await _accountRepository.GetAccountByIdAsync(accountId);
+            if (account == null)
+                throw new InvalidOperationException("Account not found");
+            if (account.Balance != 0)
+                throw new InvalidOperationException("You cannot close an account that has money left. The balance must be 0.");
+            await _accountRepository.DeleteAccountAsync(accountId);
+        }
+
         private static int GenerateAccountNumber()
         {
             // random 9-digit positive account number [100000000, 999999999]
