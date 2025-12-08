@@ -58,6 +58,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         
         var result = await _fixture.Sut.CreateAccountAsync(userId, accountName);
 
+
         
         Assert.NotNull(result);
         Assert.Equal(0m, result.Balance);
@@ -464,6 +465,30 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
     }
 
     [Fact]
+    public async Task TransferAsync_UpdatesBothAccountsAndCallsUpdateAccountAsync()
+    {
+        
+        var fromId = 1;
+        var toId = 2;
+        var amount = 50m;
+        var fromAccount = new Account("FrånKonto", 200m, 123, "user") { AccountId = fromId };
+        var toAccount = new Account("TillKonto", 100m, 456, "user") { AccountId = toId };
+
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(fromId)).ReturnsAsync(fromAccount);
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(toId)).ReturnsAsync(toAccount);
+        _fixture.TransactionRepoMock.Setup(r => r.AddTransactionAsync(It.IsAny<Transaction>())).Returns(Task.CompletedTask);
+
+        
+        await _fixture.Sut.TransferAsync(fromId, toId, amount);
+
+        
+        Assert.Equal(150m, toAccount.Balance);
+        Assert.Equal(150m, fromAccount.Balance);
+        _fixture.AccountRepoMock.Verify(r => r.UpdateAccountAsync(fromAccount), Times.Once);
+        _fixture.AccountRepoMock.Verify(r => r.UpdateAccountAsync(toAccount), Times.Once);
+    }
+
+    [Fact]
     public async Task AccountExistsAsync_ReturnsTrue_WhenAccountExists()
     {
         _fixture.AccountRepoMock.Invocations.Clear();
@@ -742,5 +767,6 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
 
 
     
+
 
 
