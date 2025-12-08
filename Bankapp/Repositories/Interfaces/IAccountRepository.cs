@@ -8,7 +8,7 @@ namespace Bankapp.Repositories.Interfaces
         Task<IEnumerable<Account>> GetAccountsByUserIdAsync(string id);
         Task AddAccountAsync(Account account);
         Task UpdateAccountAsync(Account account);
-        Task DeleteAccountAsync(int id);
-        Task<Account?> GetAcountByAccountNumberAsync(int accountNumber);
+        Task DeleteAccountAsync(Account account);
+        Task<Account?> GetAccountByAccountNumberAsync(int accountNumber);
     }
 }

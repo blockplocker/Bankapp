@@ -7,34 +7,34 @@ namespace Bankapp.Repositories
 {
     public class AccountRepository(BankappContext context) : IAccountRepository
     {
-        public BankappContext Context { get; } = context;
+        private readonly BankappContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
         public async Task<Account?> GetAccountByIdAsync(int id)
         {
-            return await Context.Accounts.FindAsync(id);
+            return await _context.Accounts.FindAsync(id);
         }
         public async Task<IEnumerable<Account>> GetAccountsByUserIdAsync(string id)
         {
-            return await Context.Accounts.Where(a => a.UserId == id).ToListAsync();
+            return await _context.Accounts.Where(a => a.UserId == id).ToListAsync();
         }
         public async Task AddAccountAsync(Account account)
         {
-            Context.Accounts.Add(account);
-            await Context.SaveChangesAsync();
+            await _context.Accounts.AddAsync(account);
+            await _context.SaveChangesAsync();
         }
         public async Task UpdateAccountAsync(Account account)
         {
-            Context.Accounts.Update(account);
-            await Context.SaveChangesAsync();
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
         }
-        public async Task DeleteAccountAsync(int id)
+        public async Task DeleteAccountAsync(Account account)
         {
-            Context.Accounts.Remove(await GetAccountByIdAsync(id));
-            await Context.SaveChangesAsync();
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
         }
-        public async Task<Account?> GetAcountByAccountNumberAsync(int accountNumber)
+        public async Task<Account?> GetAccountByAccountNumberAsync(int accountNumber)
         {
-            return await Context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+            return await _context.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
         }
     }
 }

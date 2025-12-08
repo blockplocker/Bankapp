@@ -392,7 +392,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         var toId = 2;
         _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(fromId)).ReturnsAsync((Bankapp.Models.Account)null!);
         _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(toId)).ReturnsAsync(new Bankapp.Models.Account("to", 0, 123, "user"));
-        await Assert.ThrowsAsync<NullReferenceException>(() => _fixture.Sut.TransferAsync(fromId, toId, 10m));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.TransferAsync(fromId, toId, 10m));
     }
 
     [Fact]
@@ -403,7 +403,7 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         var toId = 2;
         _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(fromId)).ReturnsAsync(new Bankapp.Models.Account("from", 100, 123, "user"));
         _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(toId)).ReturnsAsync((Bankapp.Models.Account)null!);
-        await Assert.ThrowsAsync<NullReferenceException>(() => _fixture.Sut.TransferAsync(fromId, toId, 10m));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.TransferAsync(fromId, toId, 10m));
     }
 
     [Fact]
@@ -551,15 +551,15 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         var expectedAccount = new Account("Checking", 1000m, accountNumber, "user123") { AccountId = 77 };
 
         _fixture.AccountRepoMock
-            .Setup(r => r.GetAcountByAccountNumberAsync(accountNumber))
+            .Setup(r => r.GetAccountByAccountNumberAsync(accountNumber))
             .ReturnsAsync(expectedAccount);
 
         // Act
-        var result = await _fixture.Sut.GetAcountIdByAccountNumberAsync(accountNumber);
+        var result = await _fixture.Sut.GetAccountIdByAccountNumberAsync(accountNumber);
 
         // Assert
         Assert.Equal(expectedAccount.AccountId, result);
-        _fixture.AccountRepoMock.Verify(r => r.GetAcountByAccountNumberAsync(accountNumber), Times.Once);
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByAccountNumberAsync(accountNumber), Times.Once);
     }
 
     [Fact]
@@ -569,13 +569,13 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         const int accountNumber = 987654321;
 
         _fixture.AccountRepoMock
-            .Setup(r => r.GetAcountByAccountNumberAsync(accountNumber))
+            .Setup(r => r.GetAccountByAccountNumberAsync(accountNumber))
             .ReturnsAsync((Account?)null);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.GetAcountIdByAccountNumberAsync(accountNumber));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.GetAccountIdByAccountNumberAsync(accountNumber));
 
-        _fixture.AccountRepoMock.Verify(r => r.GetAcountByAccountNumberAsync(accountNumber), Times.Once);
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByAccountNumberAsync(accountNumber), Times.Once);
     }
 
     [Fact]
@@ -586,14 +586,14 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
         var expectedAccount = new Account("Savings", 50m, accountNumber, "userX") { AccountId = 9 };
 
         _fixture.AccountRepoMock
-            .Setup(r => r.GetAcountByAccountNumberAsync(It.IsAny<int>()))
+            .Setup(r => r.GetAccountByAccountNumberAsync(It.IsAny<int>()))
             .ReturnsAsync(expectedAccount);
 
         // Act
-        var result = await _fixture.Sut.GetAcountIdByAccountNumberAsync(accountNumber);
+        var result = await _fixture.Sut.GetAccountIdByAccountNumberAsync(accountNumber);
 
         // Assert
         Assert.Equal(expectedAccount.AccountId, result);
-        _fixture.AccountRepoMock.Verify(r => r.GetAcountByAccountNumberAsync(accountNumber), Times.Once);
+        _fixture.AccountRepoMock.Verify(r => r.GetAccountByAccountNumberAsync(accountNumber), Times.Once);
     }
 }

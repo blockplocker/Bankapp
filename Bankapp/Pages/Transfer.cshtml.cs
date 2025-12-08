@@ -1,13 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Bankapp.Models;
 using Bankapp.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
 
 namespace Bankapp.Pages
 {
@@ -84,17 +81,11 @@ namespace Bankapp.Pages
                 int toAccountId;
                 try
                 {
-                    toAccountId = await _accountService.GetAcountIdByAccountNumberAsync(Input.RecipientAccountNumber.Value);
+                    toAccountId = await _accountService.GetAccountIdByAccountNumberAsync(Input.RecipientAccountNumber.Value);
                 }
                 catch (System.Exception ex)
                 {
                     ModelState.AddModelError(string.Empty, $"Fel vid sökning av kontonummer: {ex.Message}");
-                    return Page();
-                }
-
-                if (toAccountId <= 0)
-                {
-                    ModelState.AddModelError(nameof(Input.RecipientAccountNumber), "Kontonummer hittades inte.");
                     return Page();
                 }
 

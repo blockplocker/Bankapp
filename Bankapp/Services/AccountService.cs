@@ -44,12 +44,12 @@ namespace Bankapp.Services
         {
             ValidateAmount(amount);
 
-            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            Account? account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             account.Balance += amount;
             await _accountRepository.UpdateAccountAsync(account);
 
-            var transaction = new Transaction(accountId, amount, DateTime.UtcNow, TransactionType.Deposit);
+            Transaction transaction = new Transaction(accountId, amount, DateTime.UtcNow, TransactionType.Deposit);
 
             await _TransactionRepository.AddTransactionAsync(transaction);
         }
@@ -58,7 +58,7 @@ namespace Bankapp.Services
         {
             ValidateAmount(amount);
 
-            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            Account? account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             if (account.Balance < amount)
                 throw new InvalidOperationException("Insufficient funds");
@@ -103,19 +103,19 @@ namespace Bankapp.Services
         {
             if (string.IsNullOrWhiteSpace(newAccountName))
                 throw new ArgumentException("Kontonamn får inte vara tomt.", nameof(newAccountName));
-            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            Account? account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
             account.AccountName = newAccountName;
             await _accountRepository.UpdateAccountAsync(account);
         }
 
-        public async Task<int> GetAcountIdByAccountNumberAsync(int accountNumber)
+        public async Task<int> GetAccountIdByAccountNumberAsync(int accountNumber)
         {
-            var Account = await _accountRepository.GetAcountByAccountNumberAsync(accountNumber);
-            if (Account == null)
+            Account? account = await _accountRepository.GetAccountByAccountNumberAsync(accountNumber);
+            if (account == null)
             {
                 throw new InvalidOperationException("Account not found");
             }
-            return Account.AccountId;
+            return account.AccountId;
         }
 
         private static int GenerateAccountNumber()
