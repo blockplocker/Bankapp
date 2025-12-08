@@ -76,11 +76,8 @@ namespace Bankapp.Services
             if (fromAccountId == toAccountId) throw new ArgumentException("Cannot transfer to the same account");
             ValidateAmount(amount);
 
-            // throw new InvalidOperationException("Source account not found");
-            // throw new InvalidOperationException("Destination account not found");
-            Account fromAccount = await _accountRepository.GetAccountByIdAsync(fromAccountId);
-            Account toAccount = await _accountRepository.GetAccountByIdAsync(toAccountId);
-
+            Account fromAccount = await _accountRepository.GetAccountByIdAsync(fromAccountId) ?? throw new InvalidOperationException("Source account not found");
+            Account toAccount = await _accountRepository.GetAccountByIdAsync(toAccountId) ?? throw new InvalidOperationException("Destination account not found");
             if (fromAccount.Balance < amount)
                 throw new InvalidOperationException("Insufficient funds in source account");
 
