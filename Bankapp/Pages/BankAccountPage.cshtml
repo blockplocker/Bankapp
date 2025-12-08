@@ -63,6 +63,7 @@
                     <p><strong>Saldo:</strong> @account.Balance kr</p>
                     <p><strong>Tillgängligt:</strong> @account.Balance kr</p>
                     <a asp-page="RenameAccount" asp-route-accountId="@account.AccountId" class="btn btn-outline-secondary mb-3">Byt namn</a>
+                    <a asp-page="CloseAccount" asp-route-accountId="@account.AccountId" class="btn btn-outline-danger mb-3 ms-2">Stäng konto</a>
                     <h5 class="mt-4">Transaktioner</h5>
                     <ul class="list-group">
                         @if (account.Transactions != null && account.Transactions.Any())
