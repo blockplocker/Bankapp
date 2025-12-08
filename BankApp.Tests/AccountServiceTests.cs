@@ -123,6 +123,9 @@ public async Task DepositAsync_ThrowsArgumentException_AndDoesntCallRepository_W
 
     _fixture.AccountRepoMock
         .Verify(r => r.GetAccountByIdAsync(It.IsAny<int>()), Times.Never);
+    
+    _fixture.AccountRepoMock
+        .Verify(r => r.UpdateAccountAsync(It.IsAny<Account>()), Times.Never);
 
     _fixture.TransactionRepoMock
         .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()), Times.Never);
@@ -147,6 +150,9 @@ public async Task DepositAsync_CallsGetAccountByIdAsync()
     _fixture.AccountRepoMock
         .Verify(r => r.GetAccountByIdAsync(accountId),
             Times.Once);
+    _fixture.AccountRepoMock
+        .Verify(r => r.UpdateAccountAsync(testAccount),
+            Times.Once);
 }
 
 
@@ -162,7 +168,10 @@ public async Task DepositAsync_ThrowsInvalidOperationException_AndDoesntCallTran
 
     //Act and Assert
     await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.DepositAsync(accountId, amount));
-
+    
+    _fixture.AccountRepoMock
+        .Verify(r => r.UpdateAccountAsync(It.IsAny<Account>()),
+            Times.Never);
     _fixture.TransactionRepoMock
         .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
             Times.Never);
@@ -172,7 +181,7 @@ public async Task DepositAsync_ThrowsInvalidOperationException_AndDoesntCallTran
 [InlineData(1000, 500, 1500)]
 [InlineData(200, 300, 500)]
 [InlineData(0, 1000, 1000)]
-public async Task DepositAsync_IncreaseBalance(decimal balance, decimal deposit, decimal expected)
+public async Task DepositAsync_IncreasAndUpdatesBalance(decimal balance, decimal deposit, decimal expected)
 {
     // Arrange
     const int accountId = 17;
@@ -190,6 +199,9 @@ public async Task DepositAsync_IncreaseBalance(decimal balance, decimal deposit,
 
     // Assert
     Assert.Equal(expected, testAccount.Balance);
+    _fixture.AccountRepoMock.Verify(
+        r => r.UpdateAccountAsync(testAccount),
+        Times.Once);
 }
 
 [Fact]
@@ -197,7 +209,7 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
 {
     //Arrange
     const int accountId = 17;
-    decimal amount = 1000;
+    decimal amount = 1500;
     Account testAccount = new Account("BusinessAccount", 1000, 123456789, "TestUserId");
     Transaction testTransaction = null;
 
@@ -214,10 +226,17 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
     await _fixture.Sut.DepositAsync(accountId, amount);
 
     //Assert
+    _fixture.AccountRepoMock
+        .Verify(r => r.UpdateAccountAsync(testAccount)
+            ,Times.Once);
+    _fixture.TransactionRepoMock
+        .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
+            Times.Once);
     Assert.NotNull(testTransaction);
     Assert.Equal(testTransaction.Amount, amount);
     Assert.Equal(testTransaction.AccountId, accountId);
     Assert.Equal(TransactionType.Deposit, testTransaction.Type);
+    
 }
 
     
@@ -562,6 +581,10 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
         _fixture.AccountRepoMock
             .Verify(r => r.GetAccountByIdAsync(accountId),
                 Times.Never);
+        
+        _fixture.AccountRepoMock
+            .Verify(r => r.UpdateAccountAsync(It.IsAny<Account>()),
+                Times.Never);
 
         _fixture.TransactionRepoMock
             .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
@@ -589,7 +612,9 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
         _fixture.AccountRepoMock
             .Verify(r => r.GetAccountByIdAsync(accountId),
                 Times.Once);
-
+        _fixture.AccountRepoMock
+            .Verify(r => r.UpdateAccountAsync(testAccount),
+                Times.Once);
         _fixture.TransactionRepoMock
             .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
                 Times.Once);
@@ -615,7 +640,10 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
         _fixture.AccountRepoMock
             .Verify(r => r.GetAccountByIdAsync(accountId),
                 Times.Once);
-
+        
+        _fixture.AccountRepoMock
+            .Verify(r => r.UpdateAccountAsync(It.IsAny<Account>()),
+                Times.Never);
         _fixture.TransactionRepoMock
             .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
                 Times.Never);
@@ -641,8 +669,9 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
         _fixture.AccountRepoMock
             .Verify(r => r.GetAccountByIdAsync(accountId),
                 Times.Once);
-
-
+        _fixture.AccountRepoMock
+            .Verify(r => r.UpdateAccountAsync(It.IsAny<Account>()),
+                Times.Never);
         _fixture.TransactionRepoMock
             .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
                 Times.Never);
@@ -657,20 +686,23 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
         //Arrange
         Account account1 = new Account("SalaryAccount", accountBalance, 111, "testUserId1") { AccountId = 1 };
         Account account2 = new Account("BusinessAccount", 999, 222, "testUserId2") { AccountId = 2 };
+        
         _fixture.AccountRepoMock
             .Setup(r => r.GetAccountByIdAsync(1))
             .ReturnsAsync(account1);
+        
         //Act
         await _fixture.Sut.WithdrawAsync(1, withdrawAmount);
 
         //Assert
+        Assert.Equal(expected, account1.Balance);
+        Assert.Equal(999, account2.Balance);
+        _fixture.AccountRepoMock
+            .Verify(r => r.UpdateAccountAsync(account1),
+                Times.Once);
         _fixture.TransactionRepoMock
             .Verify(r => r.AddTransactionAsync(It.IsAny<Transaction>()),
                 Times.Once);
-
-        Assert.Equal(expected, account1.Balance);
-        Assert.Equal(999, account2.Balance);
-
     }
 
 
@@ -700,6 +732,9 @@ public async Task DepositAsync_CallsTransactionRepo_AndRegisterCorrectTransactio
           Assert.Equal(accountId, testTransaction.AccountId);
           Assert.Equal(-withdrawAmount, testTransaction.Amount);
           Assert.Equal(TransactionType.Withdrawal, testTransaction.Type);
+          _fixture.AccountRepoMock
+              .Verify(r => r.UpdateAccountAsync(testAccount),
+                  Times.Once);
       } 
  
     
