@@ -751,4 +751,84 @@ public class AccountServiceTests : IClassFixture<AccountServiceFixture>
                 Times.Once);
     }
 
+    [Fact]
+    public async Task RenameAccountAsync_UpdatesAccountNameAndCallsUpdate()
+    {
+        // Arrange
+        var accountId = 42;
+        var oldName = "OldName";
+        var newName = "NewName";
+        var account = new Account(oldName, 100, 123, "user") { AccountId = accountId };
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(accountId)).ReturnsAsync(account);
+        _fixture.AccountRepoMock.Setup(r => r.UpdateAccountAsync(account)).Returns(Task.CompletedTask);
+
+        // Act
+        await _fixture.Sut.RenameAccountAsync(accountId, newName);
+
+        // Assert
+        Assert.Equal(newName, account.AccountName);
+        _fixture.AccountRepoMock.Verify(r => r.UpdateAccountAsync(account), Times.Once);
+    }
+
+    [Fact]
+    public async Task RenameAccountAsync_ThrowsException_WhenAccountNotFound()
+    {
+        // Arrange
+        var accountId = 99;
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(accountId)).ReturnsAsync((Account)null!);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.RenameAccountAsync(accountId, "NewName"));
+    }
+
+    [Fact]
+    public async Task RenameAccountAsync_ThrowsException_WhenNameIsEmpty()
+    {
+        // Arrange
+        var accountId = 42;
+        var account = new Account("OldName", 100, 123, "user") { AccountId = accountId };
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(accountId)).ReturnsAsync(account);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(() => _fixture.Sut.RenameAccountAsync(accountId, ""));
+    }
+
+    [Fact]
+    public async Task CloseAccountAsync_DeletesAccount_WhenBalanceIsZero()
+    {
+        // Arrange
+        var accountId = 55;
+        var account = new Account("Test", 0, 123, "user") { AccountId = accountId };
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(accountId)).ReturnsAsync(account);
+        _fixture.AccountRepoMock.Setup(r => r.DeleteAccountAsync(account)).Returns(Task.CompletedTask);
+
+        // Act
+        await _fixture.Sut.CloseAccountAsync(accountId);
+
+        // Assert
+        _fixture.AccountRepoMock.Verify(r => r.DeleteAccountAsync(account), Times.Once);
+    }
+
+    [Fact]
+    public async Task CloseAccountAsync_ThrowsException_WhenAccountNotFound()
+    {
+        // Arrange
+        var accountId = 99;
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(accountId)).ReturnsAsync((Account)null!);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.CloseAccountAsync(accountId));
+    }
+
+    [Fact]
+    public async Task CloseAccountAsync_ThrowsException_WhenBalanceNotZero()
+    {
+        // Arrange
+        var accountId = 55;
+        var account = new Account("Test", 100, 123, "user") { AccountId = accountId };
+        _fixture.AccountRepoMock.Setup(r => r.GetAccountByIdAsync(accountId)).ReturnsAsync(account);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => _fixture.Sut.CloseAccountAsync(accountId));
+    }
 }
