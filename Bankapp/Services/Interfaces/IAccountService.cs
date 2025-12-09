@@ -13,6 +13,7 @@ namespace Bankapp.Services.Interfaces
         Task TransferAsync(int fromAccountId, int toAccountId, decimal amount);
         Task<bool> AccountExistsAsync(int accountId);
         Task RenameAccountAsync(int accountId, string newAccountName);
+        Task<int> GetAccountIdByAccountNumberAsync(int accountNumber);
         Task CloseAccountAsync(int accountId);
     }
 }
