@@ -8,9 +8,9 @@ namespace Bankapp.Services.Interfaces
         Task<IEnumerable<Account>> GetAccountsForUserAsync(string userId);
         Task<Account?> GetAccountByIdAsync(int accountId);
         Task<IEnumerable<Transaction>> GetTransactionsAsync(int accountId);
-        Task DepositAsync(int accountId, decimal amount);
-        Task WithdrawAsync(int accountId, decimal amount);
-        Task TransferAsync(int fromAccountId, int toAccountId, decimal amount);
+        Task DepositAsync(int accountId, decimal amount, string description);
+        Task WithdrawAsync(int accountId, decimal amount, string description);
+        Task TransferAsync(int fromAccountId, int toAccountId, decimal amount, string description);
         Task<bool> AccountExistsAsync(int accountId);
         Task RenameAccountAsync(int accountId, string newAccountName);
         Task<int> GetAccountIdByAccountNumberAsync(int accountNumber);

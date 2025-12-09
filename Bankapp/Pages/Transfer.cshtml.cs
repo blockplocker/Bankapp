@@ -15,7 +15,7 @@ namespace Bankapp.Pages
 
         [BindProperty]
         public InputModel Input { get; set; } = new();
-        public List<Account> UserAccounts { get; set; } = new();
+        public List<Account> UserAccounts { get; set; } = [];
         public string? StatusMessage { get; set; }
 
         public class InputModel
@@ -36,7 +36,11 @@ namespace Bankapp.Pages
             public decimal Amount { get; set; }
 
             [Display(Name = "Typ av överföring")]
-            public bool IsExternal { get; set; } = false; 
+            public bool IsExternal { get; set; } = false;
+
+            [Required]
+            [Display(Name = "Beskrivning")]
+            public string Description { get; set; } = string.Empty;
         }
 
         public async Task OnGetAsync()
@@ -109,7 +113,7 @@ namespace Bankapp.Pages
 
             try
             {
-                await _accountService.TransferAsync(Input.FromAccountId!.Value, Input.ToAccountId!.Value, Input.Amount);
+                await _accountService.TransferAsync(Input.FromAccountId!.Value, Input.ToAccountId!.Value, Input.Amount, Input.Description);
                 StatusMessage = "Överföring genomförd!";
                 return RedirectToPage("BankAccountPage");
             }

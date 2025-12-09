@@ -40,7 +40,7 @@ namespace Bankapp.Services
             return await _TransactionRepository.GetTransactionsByAccountIdAsync(accountId);
         }
 
-        public async Task DepositAsync(int accountId, decimal amount)
+        public async Task DepositAsync(int accountId, decimal amount, string description)
         {
             ValidateAmount(amount);
 
@@ -49,12 +49,12 @@ namespace Bankapp.Services
             account.Balance += amount;
             await _accountRepository.UpdateAccountAsync(account);
 
-            Transaction transaction = new Transaction(accountId, amount, DateTime.UtcNow, TransactionType.Deposit);
+            Transaction transaction = new(accountId, amount, description, DateTime.UtcNow, TransactionType.Deposit);
 
             await _TransactionRepository.AddTransactionAsync(transaction);
         }
 
-        public async Task WithdrawAsync(int accountId, decimal amount)
+        public async Task WithdrawAsync(int accountId, decimal amount, string description)
         {
             ValidateAmount(amount);
 
@@ -66,12 +66,12 @@ namespace Bankapp.Services
             account.Balance -= amount;
             await _accountRepository.UpdateAccountAsync(account);
 
-            Transaction transaction = new(accountId, -amount, DateTime.UtcNow, TransactionType.Withdrawal);
+            Transaction transaction = new(accountId, -amount, description, DateTime.UtcNow, TransactionType.Withdrawal);
 
             await _TransactionRepository.AddTransactionAsync(transaction);
         }
 
-        public async Task TransferAsync(int fromAccountId, int toAccountId, decimal amount)
+        public async Task TransferAsync(int fromAccountId, int toAccountId, decimal amount, string description)
         {
             if (fromAccountId == toAccountId) throw new ArgumentException("Cannot transfer to the same account");
             ValidateAmount(amount);
@@ -86,9 +86,9 @@ namespace Bankapp.Services
             await _accountRepository.UpdateAccountAsync(fromAccount);
             await _accountRepository.UpdateAccountAsync(toAccount);
 
-            Transaction fromTransaction = new(fromAccountId, -amount, DateTime.UtcNow, TransactionType.Transfer);
+            Transaction fromTransaction = new(fromAccountId, -amount, description, DateTime.UtcNow, TransactionType.Transfer);
 
-            Transaction toTransaction = new(toAccountId, amount, DateTime.UtcNow, TransactionType.Transfer);
+            Transaction toTransaction = new(toAccountId, amount, description, DateTime.UtcNow, TransactionType.Transfer);
 
             await _TransactionRepository.AddTransactionAsync(fromTransaction);
             await _TransactionRepository.AddTransactionAsync(toTransaction);
