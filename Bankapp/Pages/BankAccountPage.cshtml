@@ -11,23 +11,23 @@
             <h4 class="text-primary fw-bold mb-4">Bankify</h4>
             <div class="list-group">
                 <a asp-page="BankAccountPage" class="list-group-item list-group-item-action active">
-                    Min ekonomi
+                    Konto Översikt
                 </a>
                 <a asp-page="/Transfer" class="list-group-item list-group-item-action">
                     överföra
                 </a>
-                <a asp-page="/TODO" class="list-group-item list-group-item-action">
-                    Min profil
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" class="list-group-item list-group-item-action">
+                    Profil inställningar
                 </a>
             </div>
         </div>
 
         <div class="col-12 col-md-9 col-lg-10 p-4">
             <h2 class="mb-4 fw-semibold">Mina konton</h2>
-            <a asp-page="Deposit" class="btn btn-success mb-3 ms-2">Sätt in pengar</a>
-            <a asp-page="Withdraw" class="btn btn-success mb-3 ms-2">Ta ut pengar</a>
-            <a asp-page="Transfer" class="btn btn-primary mb-3 ms-2">Överför</a>
-            <a asp-page="CreateBankAccount" class="btn btn-success mb-3">Skapa nytt konto</a>
+            <a asp-page="Deposit" class="btn btn-success mb-3 ms-2">Insättning</a>
+            <a asp-page="Withdraw" class="btn btn-success mb-3 ms-2">Uttag</a>
+            <a asp-page="Transfer" class="btn btn-primary mb-3 ms-2">överföringar</a>
+            <a asp-page="CreateBankAccount" class="btn btn-success mb-3">Skapa Bankkonto</a>
             <div class="list-group shadow-sm">
                 @foreach (var account in Model.Accounts)
                 {
