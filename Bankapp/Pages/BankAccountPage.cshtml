@@ -72,10 +72,20 @@
                             {
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>@t.Date.ToShortDateString() – @t.Type</span>
+                                    @if (!string.IsNullOrEmpty(@t.Description) && t.Description.Length > 45)
+                                    {
+                                        <span>@t.Description.Substring(0, 45)...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@t.Description</span>
+                                    } 
                                     @if (t.Amount > 0)
                                     {
                                         <strong class="text-success">@t.Amount kr</strong>
-                                    }else {
+                                    }
+                                    else
+                                    {
                                         <strong class="text-danger">@t.Amount kr</strong>
                                     }
                                 </li>
