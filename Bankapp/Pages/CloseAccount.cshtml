@@ -3,14 +3,20 @@
 @{
     ViewData["Title"] = "Stäng konto";
 }
-
-<h2>Stäng konto</h2>
-<p>Är du säker på att du vill stänga detta konto? Alla transaktioner och saldot kommer att tas bort.</p>
-<form method="post">
-    <button type="submit" class="btn btn-danger">Stäng konto</button>
-    <a asp-page="BankAccountPage" class="btn btn-secondary ms-2">Avbryt</a>
-</form>
-
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <h2 class="mb-4 text-center">Stäng konto</h2>
+            <div class="p-4 border rounded shadow-sm bg-white">
+                <p>Är du säker på att du vill stänga detta konto? Alla transaktioner och saldot kommer att tas bort.</p>
+                <form method="post">
+                    <button type="submit" class="btn btn-danger">Stäng konto</button>
+                    <a asp-page="BankAccountPage" class="btn btn-secondary ms-2">Avbryt</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @if (Model.StatusMessage != null)
 {
     <div class="alert alert-info mt-3">@Model.StatusMessage</div>
