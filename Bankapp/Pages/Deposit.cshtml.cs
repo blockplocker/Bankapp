@@ -27,9 +27,8 @@ namespace Bankapp.Pages
             [Display(Name = "Belopp")]
             public decimal Amount { get; set; }
 
-            [Required]
             [Display(Name = "Beskrivning")]
-            public string Description { get; set; } = string.Empty;
+            public string? Description { get; set; } = string.Empty;
         }
 
         public async Task OnGetAsync()
@@ -52,7 +51,7 @@ namespace Bankapp.Pages
             }
             try
             {
-                await _accountService.DepositAsync(Input.AccountId!.Value, Input.Amount, Input.Description);
+                await _accountService.DepositAsync(Input.AccountId!.Value, Input.Amount, Input.Description ?? string.Empty);
                 StatusMessage = "Insättning genomförd!";
                 return RedirectToPage("BankAccountPage");
             }

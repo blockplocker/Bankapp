@@ -38,9 +38,8 @@ namespace Bankapp.Pages
             [Display(Name = "Typ av överföring")]
             public bool IsExternal { get; set; } = false;
 
-            [Required]
             [Display(Name = "Beskrivning")]
-            public string Description { get; set; } = string.Empty;
+            public string? Description { get; set; } = string.Empty;
         }
 
         public async Task OnGetAsync()
@@ -113,7 +112,7 @@ namespace Bankapp.Pages
 
             try
             {
-                await _accountService.TransferAsync(Input.FromAccountId!.Value, Input.ToAccountId!.Value, Input.Amount, Input.Description);
+                await _accountService.TransferAsync(Input.FromAccountId!.Value, Input.ToAccountId!.Value, Input.Amount, Input.Description ?? string.Empty);
                 StatusMessage = "Överföring genomförd!";
                 return RedirectToPage("BankAccountPage");
             }

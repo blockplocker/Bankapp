@@ -13,7 +13,7 @@ namespace Bankapp.Pages
         IAccountService _accountService,
         UserManager<BankappUser> _userManager) : PageModel
     {
-        public IEnumerable<Account> Accounts { get; set; } = Enumerable.Empty<Account>();
+        public IEnumerable<Account> Accounts { get; set; } = [];
         public Account? SelectedAccount { get; set; }
 
         public BankappUser? CurrentUser { get; set; }
