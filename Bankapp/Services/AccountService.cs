@@ -40,25 +40,25 @@ namespace Bankapp.Services
             return await _TransactionRepository.GetTransactionsByAccountIdAsync(accountId);
         }
 
-        public async Task DepositAsync(int accountId, decimal amount)
+        public async Task DepositAsync(int accountId, decimal amount, string description)
         {
             ValidateAmount(amount);
 
-            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            Account? account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             account.Balance += amount;
             await _accountRepository.UpdateAccountAsync(account);
 
-            var transaction = new Transaction(accountId, amount, DateTime.UtcNow, TransactionType.Deposit);
+            Transaction transaction = new(accountId, amount, description, DateTime.UtcNow, TransactionType.Deposit);
 
             await _TransactionRepository.AddTransactionAsync(transaction);
         }
 
-        public async Task WithdrawAsync(int accountId, decimal amount)
+        public async Task WithdrawAsync(int accountId, decimal amount, string description)
         {
             ValidateAmount(amount);
 
-            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            Account? account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
 
             if (account.Balance < amount)
                 throw new InvalidOperationException("Insufficient funds");
@@ -66,21 +66,18 @@ namespace Bankapp.Services
             account.Balance -= amount;
             await _accountRepository.UpdateAccountAsync(account);
 
-            Transaction transaction = new(accountId, -amount, DateTime.UtcNow, TransactionType.Withdrawal);
+            Transaction transaction = new(accountId, -amount, description, DateTime.UtcNow, TransactionType.Withdrawal);
 
             await _TransactionRepository.AddTransactionAsync(transaction);
         }
 
-        public async Task TransferAsync(int fromAccountId, int toAccountId, decimal amount)
+        public async Task TransferAsync(int fromAccountId, int toAccountId, decimal amount, string description)
         {
             if (fromAccountId == toAccountId) throw new ArgumentException("Cannot transfer to the same account");
             ValidateAmount(amount);
 
-            // throw new InvalidOperationException("Source account not found");
-            // throw new InvalidOperationException("Destination account not found");
-            Account fromAccount = await _accountRepository.GetAccountByIdAsync(fromAccountId);
-            Account toAccount = await _accountRepository.GetAccountByIdAsync(toAccountId);
-
+            Account fromAccount = await _accountRepository.GetAccountByIdAsync(fromAccountId) ?? throw new InvalidOperationException("Source account not found");
+            Account toAccount = await _accountRepository.GetAccountByIdAsync(toAccountId) ?? throw new InvalidOperationException("Destination account not found");
             if (fromAccount.Balance < amount)
                 throw new InvalidOperationException("Insufficient funds in source account");
 
@@ -89,9 +86,9 @@ namespace Bankapp.Services
             await _accountRepository.UpdateAccountAsync(fromAccount);
             await _accountRepository.UpdateAccountAsync(toAccount);
 
-            Transaction fromTransaction = new(fromAccountId, -amount, DateTime.UtcNow, TransactionType.Transfer);
+            Transaction fromTransaction = new(fromAccountId, -amount, description, DateTime.UtcNow, TransactionType.Transfer);
 
-            Transaction toTransaction = new(toAccountId, amount, DateTime.UtcNow, TransactionType.Transfer);
+            Transaction toTransaction = new(toAccountId, amount, description, DateTime.UtcNow, TransactionType.Transfer);
 
             await _TransactionRepository.AddTransactionAsync(fromTransaction);
             await _TransactionRepository.AddTransactionAsync(toTransaction);
@@ -106,11 +103,21 @@ namespace Bankapp.Services
         {
             if (string.IsNullOrWhiteSpace(newAccountName))
                 throw new ArgumentException("Kontonamn får inte vara tomt.", nameof(newAccountName));
-            var account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
+            Account? account = await _accountRepository.GetAccountByIdAsync(accountId) ?? throw new InvalidOperationException("Account not found");
             account.AccountName = newAccountName;
             await _accountRepository.UpdateAccountAsync(account);
         }
 
+        public async Task<int> GetAccountIdByAccountNumberAsync(int accountNumber)
+        {
+            Account? account = await _accountRepository.GetAccountByAccountNumberAsync(accountNumber);
+            if (account == null)
+            {
+                throw new InvalidOperationException("Account not found");
+            }
+            return account.AccountId;
+        }
+         
         public async Task CloseAccountAsync(int accountId)
         {
             var account = await _accountRepository.GetAccountByIdAsync(accountId);
@@ -118,7 +125,7 @@ namespace Bankapp.Services
                 throw new InvalidOperationException("Account not found");
             if (account.Balance != 0)
                 throw new InvalidOperationException("You cannot close an account that has money left. The balance must be 0.");
-            await _accountRepository.DeleteAccountAsync(accountId);
+            await _accountRepository.DeleteAccountAsync(account);
         }
 
         private static int GenerateAccountNumber()

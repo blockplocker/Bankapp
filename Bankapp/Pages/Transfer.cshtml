@@ -6,9 +6,23 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
-            <h2 class="mb-4 text-center">Överför pengar mellan konton</h2>
+            <h2 class="mb-4 text-center">Överför pengar</h2>
 
             <form method="post" class="p-4 border rounded shadow-sm bg-white">
+                <div class="mb-3">
+                    <label class="form-label">Typ av överföring</label>
+                    <div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="Input.IsExternal" value="false" id="transferInternal" />
+                            <label class="form-check-label" for="transferInternal">Mellan egna konton</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="Input.IsExternal" value="true" id="transferExternal" />
+                            <label class="form-check-label" for="transferExternal">Till annat kontonummer</label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-floating mb-3">
                     <select asp-for="Input.FromAccountId" class="form-select">
                         <option value="">Välj från-konto</option>
@@ -20,7 +34,8 @@
                     <label asp-for="Input.FromAccountId">Från konto</label>
                     <span asp-validation-for="Input.FromAccountId" class="text-danger"></span>
                 </div>
-                <div class="form-floating mb-3">
+
+                <div id="internalTarget" class="form-floating mb-3">
                     <select asp-for="Input.ToAccountId" class="form-select">
                         <option value="">Välj till-konto</option>
                         @foreach (var acc in Model.UserAccounts)
@@ -31,10 +46,22 @@
                     <label asp-for="Input.ToAccountId">Till konto</label>
                     <span asp-validation-for="Input.ToAccountId" class="text-danger"></span>
                 </div>
+
+                <div id="externalTarget" class="form-floating mb-3" style="display:none;">
+                    <input asp-for="Input.RecipientAccountNumber" class="form-control" placeholder="Kontonummer" type="number" step="1" />
+                    <label asp-for="Input.RecipientAccountNumber">Mottagarens kontonummer</label>
+                    <span asp-validation-for="Input.RecipientAccountNumber" class="text-danger"></span>
+                </div>
+
                 <div class="form-floating mb-3">
                     <input asp-for="Input.Amount" class="form-control" placeholder="Belopp" type="number" step="0.01" />
                     <label asp-for="Input.Amount">Belopp (kr)</label>
                     <span asp-validation-for="Input.Amount" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Description" class="form-control" placeholder="Beskrivning" type="text" />
+                    <label asp-for="Input.Description">Beskrivning</label>
+                    <span asp-validation-for="Input.Description" class="text-danger"></span>
                 </div>
                 <button type="submit" class="btn btn-primary">Överför</button>
             </form>
@@ -48,4 +75,27 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const internalTarget = document.getElementById('internalTarget');
+            const externalTarget = document.getElementById('externalTarget');
+            const radioInternal = document.getElementById('transferInternal');
+            const radioExternal = document.getElementById('transferExternal');
+
+            function toggleTargets() {
+                if (radioExternal.checked) {
+                    externalTarget.style.display = '';
+                    internalTarget.style.display = 'none';
+                } else {
+                    externalTarget.style.display = 'none';
+                    internalTarget.style.display = '';
+                }
+            }
+
+            radioInternal.addEventListener('change', toggleTargets);
+            radioExternal.addEventListener('change', toggleTargets);
+
+            toggleTargets();
+        })();
+    </script>
 }

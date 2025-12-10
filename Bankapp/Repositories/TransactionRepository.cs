@@ -8,7 +8,7 @@ namespace Bankapp.Repositories
     public class TransactionRepository(BankappContext context) : ITransactionRepository
     {
         public BankappContext Context { get; } = context;
-        public async Task<Transaction> GetTransactionByIdAsync(int id)
+        public async Task<Transaction?> GetTransactionByIdAsync(int id)
         {
             return await Context.Transactions.FindAsync(id);
         }
@@ -18,7 +18,7 @@ namespace Bankapp.Repositories
         }
         public async Task AddTransactionAsync(Transaction transaction)
         {
-            Context.Transactions.AddAsync(transaction);
+            await Context.Transactions.AddAsync(transaction);
             await Context.SaveChangesAsync();
         }
         public async Task UpdateTransactionAsync(Transaction transaction)
@@ -28,7 +28,7 @@ namespace Bankapp.Repositories
         }
         public async Task DeleteTransactionAsync(int id)
         {
-            var transaction = await GetTransactionByIdAsync(id);
+            Transaction? transaction = await GetTransactionByIdAsync(id);
             if (transaction != null) {
                 Context.Transactions.Remove(transaction);
                 await Context.SaveChangesAsync();

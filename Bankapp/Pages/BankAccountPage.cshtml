@@ -13,8 +13,8 @@
                 <a asp-page="BankAccountPage" class="list-group-item list-group-item-action active">
                     Konto Översikt
                 </a>
-                <a asp-page="/TODO" class="list-group-item list-group-item-action">
-                    Betala & överföra
+                <a asp-page="/Transfer" class="list-group-item list-group-item-action">
+                    överföra
                 </a>
                 <a asp-area="Identity" asp-page="/Account/Manage/Index" class="list-group-item list-group-item-action">
                     Profil inställningar
@@ -26,7 +26,7 @@
             <h2 class="mb-4 fw-semibold">Mina konton</h2>
             <a asp-page="Deposit" class="btn btn-success mb-3 ms-2">Insättning</a>
             <a asp-page="Withdraw" class="btn btn-success mb-3 ms-2">Uttag</a>
-            <a asp-page="Transfer" class="btn btn-primary mb-3 ms-2">Egna överföringar</a>
+            <a asp-page="Transfer" class="btn btn-primary mb-3 ms-2">överföringar</a>
             <a asp-page="CreateBankAccount" class="btn btn-success mb-3">Skapa Bankkonto</a>
             <div class="list-group shadow-sm">
                 @foreach (var account in Model.Accounts)
@@ -72,10 +72,20 @@
                             {
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>@t.Date.ToShortDateString() – @t.Type</span>
+                                    @if (!string.IsNullOrEmpty(@t.Description) && t.Description.Length > 45)
+                                    {
+                                        <span>@t.Description.Substring(0, 45)...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@t.Description</span>
+                                    } 
                                     @if (t.Amount > 0)
                                     {
                                         <strong class="text-success">@t.Amount kr</strong>
-                                    }else {
+                                    }
+                                    else
+                                    {
                                         <strong class="text-danger">@t.Amount kr</strong>
                                     }
                                 </li>
