@@ -21,9 +21,6 @@ namespace Bankapp.Pages
         [BindProperty(SupportsGet = true)]
         public int? AccountId { get; set; }
 
-
-
-
         public async Task OnGet()
         {
             CurrentUser = await _userManager.GetUserAsync(User);
