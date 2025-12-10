@@ -49,24 +49,28 @@
         </div>
     </div>
 
-    <div class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
 
-                <div class="card shadow-sm border-0 text-center p-4">
-                    <h2 class="fw-bold mb-3">Välkommen till Bankify</h2>
-                    <p class="mb-4 fs-5 text-muted">
-                        En enkel och modern plats där du kan sköta dina bankärenden.
-                        Se dina konton, göra överföringar och ha full kontroll, allt på samma ställe.
-                    </p>
+                    <div class="card shadow-sm border-0 text-center p-4">
+                        <h2 class="fw-bold mb-3">Välkommen till Bankify</h2>
+                        <p class="mb-4 fs-5 text-muted">
+                            En enkel och modern plats där du kan sköta dina bankärenden.
+                            Se dina konton, göra överföringar och ha full kontroll, allt på samma ställe.
+                        </p>
 
-                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg px-4">
-                        Logga in
-                    </a>
+                        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg px-4">
+                            Logga in
+                        </a>
+                    </div>
+
                 </div>
-
             </div>
         </div>
-    </div>
+    }
+    
 
 </div>
