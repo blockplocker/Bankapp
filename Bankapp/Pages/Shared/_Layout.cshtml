@@ -27,8 +27,9 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="bankNavbar">
-                    
                 <ul class="navbar-nav me-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-page="/BankAccountPage">Konto Översikt</a>
                     </li>
@@ -36,9 +37,12 @@
                         <a class="nav-link" asp-area="" asp-page="/Transfer">Betala & överföra</a>
                     </li>
                     <li class="nav-item">
+
                             <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">Min profil</a>
-                    </li>
+                        </li>
+                    }
                 </ul>
+                
 
                 <ul class="navbar-nav">
                     <partial name="_LoginPartial"/>

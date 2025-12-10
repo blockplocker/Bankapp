@@ -3,3 +3,70 @@
 @{
     ViewData["Title"] = "Home page";
 }
+<link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+
+<div class="login-body">
+
+    <div class="hero-section text-center mb-5 mt-5">
+
+        <i class="bi bi-bank display-4 text-light mb-3"></i>
+
+        <h1 class="display-3 fw-bolder text-light">Bankify</h1>
+    </div>
+
+    <div class="container my-5">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="bi bi-wallet2 fs-1 text-primary"></i>
+                        <h4 class="mt-3">Kom åt din plånbok var du än är</h4>
+                        <p>Se dina konton och ha koll på din ekonomi när du behöver. Enkelt och smidigt.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="bi bi-speedometer2 fs-1 text-primary"></i>
+                        <h4 class="mt-3">Snabba överföringar</h4>
+                        <p>Skicka och ta emot pengar snabbt och utan krångel.</p><br />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <i class="bi bi-shield-lock fs-1 text-primary"></i>
+                        <h4 class="mt-3">Säker inloggning med 2FA</h4>
+                        <p>Ditt konto skyddas av tvåfaktorsinloggning för extra trygghet.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                <div class="card shadow-sm border-0 text-center p-4">
+                    <h2 class="fw-bold mb-3">Välkommen till Bankify</h2>
+                    <p class="mb-4 fs-5 text-muted">
+                        En enkel och modern plats där du kan sköta dina bankärenden.
+                        Se dina konton, göra överföringar och ha full kontroll, allt på samma ställe.
+                    </p>
+
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg px-4">
+                        Logga in
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
